@@ -8,7 +8,6 @@ import { Profile } from "./components/Profile";
 import { MessageList } from "./components/MessageList";
 import { NewMessageForm } from "./components/NewMessageForm";
 import { AuthButtons } from "./components/AuthButtons";
-
 export type PrettyMessage = { senderName: string; text: string };
 
 
@@ -27,56 +26,84 @@ function App() {
 
     const init = async () =>
     {
-    }
-  
-    let authToken = localStorage.getItem("auth_token");
-    getCurrentUser().then(user => {
-      if (user && user.id_token) {
-        authToken = user.id_token;  
-        console.log("Got current user with token:", user);
-      } else {
-        console.log("No current user");
-      }
-    }).catch(err => {
-      console.error("Error getting current user:", err);
-    });
-
-
-    const onConnect = (conn: DbConnection, identity: Identity, token: string) => {
-      setIdentity(identity);
-      setConnected(true);
-      localStorage.setItem("auth_token", token);
-      console.log("Connected to SpacetimeDB:", identity.toHexString());
-
-      conn.reducers.onSendMessage(() => {
-        console.log("Message sent.");
-      });
-
-      conn.subscriptionBuilder().onApplied(() => {
-        console.log("SDK client cache initialized.");
+      try
+      {
+        let token = localStorage.getItem("stdb_access_token");
+        console.log("Stored auth token:", token);
         
-      }).subscribe(["SELECT * FROM message", "SELECT * FROM user"]);
-    };
+        const user = await getCurrentUser().then(user => {
+          if (user && user.id_token) {
+            token = user.access_token;
+            console.log("Got current user with token:", user);
+            // Otherwise, pick an OIDC token the server can validate
+            if (token && user) {
+              // If your provider gives a JWT access_token, prefer it; otherwise use id_token
+              const candidate = user.access_token && user.access_token.split(".").length === 3
+                ? user.access_token
+                : user.id_token; // Google: use id_token
+                console.log("Candidate token:", candidate); 
+              token = candidate || "";
+            }
+          } else {
+            console.log("No current user");
+            token = null;
+          }
+        }).catch(err => {
+          console.error("Error getting current user:", err);
+          token = null;
+        });
 
-    const onDisconnect = () => {
-      console.log("Disconnected from SpacetimeDB");
-      setConnected(false);
-    };
 
-    const onConnectError = (_ctx: ErrorContext, err: Error) => {
-      console.log("Error connecting:", err);
-    };
 
-    setConn(
-      DbConnection.builder()
-        .withUri("ws://192.168.1.143:3000")
-        .withModuleName("sandbox")
-        .withToken(authToken || "")
-        .onConnect(onConnect)
-        .onDisconnect(onDisconnect)
-        .onConnectError(onConnectError)
-        .build()
-    );
+
+      let auth = token || "";
+      console.log("Using auth token:", auth);
+      const onConnect = (conn: DbConnection, identity: Identity, token: string) => {
+        setIdentity(identity);
+        setConnected(true);
+        console.log("Connection token:", token);
+        console.log("Connected to SpacetimeDB:" + identity.toHexString());
+
+        conn.reducers.onSendMessage(() => {
+          console.log("Message sent.");
+        });
+
+        conn.subscriptionBuilder().onApplied(() => {
+          console.log("SDK client cache initialized.");
+          
+        }).subscribe(["SELECT * FROM message", "SELECT * FROM user"]);
+      };
+
+      const onDisconnect = () => {
+        console.log("Disconnected from SpacetimeDB");
+        setConnected(false);
+      };
+
+      const onConnectError = (_ctx: ErrorContext, err: Error) => {
+        console.log("Error connecting:", err);
+      };
+
+        setConn(
+          DbConnection.builder()
+          .withUri("ws://192.168.1.143:3000")
+          .withModuleName("sandbox")
+          .withToken(auth)
+          .onConnect(onConnect)
+          .onDisconnect(onDisconnect)
+          .onConnectError(onConnectError)
+          .build()
+        );
+      }
+      catch (err)
+      {
+        console.error("Error during initialization:", err);
+      }
+    };
+  
+
+    init();
+
+
   }, []);
 
   if (!conn || !connected || !identity) {

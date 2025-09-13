@@ -1,5 +1,4 @@
 import { UserManager, WebStorageStateStore } from "oidc-client-ts";
-
 const oidcConfig = {
   authority: "https://dev-ttserecwbaauimqy.us.auth0.com",
   client_id: "tJVeFR6i8EIF1mID7tLET7fL61QifGkb",
@@ -17,6 +16,7 @@ export function login() {
 }
 
 export function logout() {
+  localStorage.removeItem("stdb_access_token");
   return userManager.signoutRedirect();
 }
 
