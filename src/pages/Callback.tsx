@@ -7,7 +7,7 @@ const oidcConfig =
   authority: "https://dev-ttserecwbaauimqy.us.auth0.com",
   client_id: "tJVeFR6i8EIF1mID7tLET7fL61QifGkb",
   redirect_uri: "http://localhost:5173/callback",
-  post_logout_redirect_uri: "http://localhost:5173",
+  post_logout_redirect_uri: "http://192.168.1.1:5173",
   response_type: "code",
   scope:"openid profile email",
   userStore: new WebStorageStateStore({ store: window.localStorage })
