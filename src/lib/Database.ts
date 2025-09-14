@@ -3,7 +3,6 @@ import { Identity } from "@clockworklabs/spacetimedb-sdk"
 export class Database
 {
     public static Instance: Database;
-    private _name: string = "";   
     private _initialized: boolean = false;
     private _identity: Identity | null = null;
     private _connection: DbConnection | null = null;
@@ -58,12 +57,13 @@ export class Database
 
     public static getInstance(): Database
     {
-        console.log("Getting database instance.");
         if (!Database.Instance)
         {
             console.log("Creating new database instance.");
             Database.Instance = new Database();
+            return Database.Instance;
         }
+        console.log("Returning existing database instance.");
         return Database.Instance;
     }
     
@@ -71,6 +71,9 @@ export class Database
     private onConnect = (conn: DbConnection, identity: Identity, token: string) => {
         this._identity = identity;
         this._connection = conn;
+
+        // TODO: Cache the token to localStorage and reuse it on reconnect if needed
+        // localStorage.setItem("stdb_access_token", token);
 
         console.log("Connection token:", token);
         console.log("Connected to SpacetimeDB:" + identity.toHexString());
@@ -95,7 +98,6 @@ export class Database
     };
 
     private onConnectError = (_ctx: ErrorContext, err: Error) => {
-        console.log("Error connecting:", err);
         if (this._rejectReady) {
             this._rejectReady(err);
             this._initialized = false;

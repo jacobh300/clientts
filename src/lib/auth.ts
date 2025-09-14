@@ -1,4 +1,5 @@
-import { UserManager, WebStorageStateStore } from "oidc-client-ts";
+import { User, UserManager, WebStorageStateStore } from "oidc-client-ts";
+
 const oidcConfig = {
   authority: "https://dev-ttserecwbaauimqy.us.auth0.com",
   client_id: "tJVeFR6i8EIF1mID7tLET7fL61QifGkb",
@@ -8,6 +9,47 @@ const oidcConfig = {
   scope: "openid profile email",
   userStore: new WebStorageStateStore({ store: window.localStorage }),
 };
+
+export class AuthUser 
+{
+  private _user: User | null = null;
+
+  public get user(): User | null
+  {
+    return this._user;
+  }
+
+  public getAuthToken(): string | null
+  {
+    if(!this._user) return null;
+
+    if(this._user.access_token && this._user.access_token.split(".").length === 3)
+    {
+      return this._user.access_token;
+    }
+
+    if(this._user.id_token && typeof this._user.id_token === "string")
+    {
+      return this._user.id_token;
+    }
+
+    return null;
+  }
+
+  public constructor(user: User | null)
+  {
+    if(!user)
+    {
+      console.warn("No Auth User provided, creating empty user.");
+    }
+    else
+    {
+      this._user = user;
+    }
+  }
+}
+
+
 
 export const userManager = new UserManager(oidcConfig);
 
@@ -29,6 +71,6 @@ export async function getCurrentUserDebugLog()
     });
 }
 
-export async function getCurrentUser() {
+export async function getCurrentUser() : Promise<User | null> {
   return await userManager.getUser();
 }
