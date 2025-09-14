@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { DbConnection, type ErrorContext, type EventContext, Message, User } from './module_bindings';
+import { DbConnection, type ErrorContext, type EventContext, Message} from './module_bindings';
 import { Identity } from "@clockworklabs/spacetimedb-sdk"
 import { useMessages, useUsers } from "./lib/hooks";
 import { getCurrentUser } from "./lib/auth";
@@ -9,6 +9,7 @@ import { MessageList } from "./components/MessageList";
 import { NewMessageForm } from "./components/NewMessageForm";
 import { AuthButtons } from "./components/AuthButtons";
 import { Database } from "./lib/database";
+import { AuthUser } from "./lib/auth";
 
 export type PrettyMessage = { senderName: string; text: string };
 
@@ -19,61 +20,30 @@ function App() {
   const [systemMessage, setSystemMessage] = useState("");
   const messages = useMessages(conn);
   const users = useUsers(conn);
-  //Testing
+  let token : string | null = null;
+
   useEffect(() => {
     const init = async () =>
     {
+      let authUser = new AuthUser(await getCurrentUser());
+      token = authUser.getAuthToken();
+    
+      const db = Database.getInstance();
       try
       {
-        let token = localStorage.getItem("stdb_access_token");
-        console.log("Stored auth token:", token);
-        const user = await getCurrentUser().then(user => {
-          if (user && user.id_token) {
-            token = user.id_token;
-            console.log("Got current user with token:", user);
-            // Otherwise, pick an OIDC token the server can validate
-            if (token && user) {
-              // If your provider gives a JWT access_token, prefer it; otherwise use id_token
-              const candidate = user.access_token && user.access_token.split(".").length === 3
-                ? user.access_token
-                : user.id_token; // Google: use id_token
-              token = candidate || "";
-            }
-          } else {
-            console.log("No current user");
-            token = null;
-          }
-        }).catch(err => {
-          console.error("Error getting current user:", err);
-          token = null;
-        });
-
-
-        const db = Database.getInstance();
-        try
-        {
-          await db.Init(token || "");
-          setConn(db.getConnection());
-          setIdentity(db.getIdentity());
-          setConnected(true);
-        }
-        catch (err)
-        {
-          console.error("Error initializing database:", err);
-          setConnected(false);
-        } 
-
+        await db.Init(token || "");
+        setConn(db.getConnection());
+        setIdentity(db.getIdentity());
+        setConnected(true);
       }
       catch (err)
       {
-        console.error("Error during initialization:", err);
-      }
+        console.error("Error initializing database:", err);
+        setConnected(false);
+      } 
     };
   
-
     init();
-
-
   }, []);
 
   if (!conn || !connected || !identity) {
