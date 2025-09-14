@@ -58,7 +58,6 @@ export function login() {
 }
 
 export function logout() {
-  localStorage.removeItem("stdb_access_token");
   return userManager.signoutRedirect();
 }
 

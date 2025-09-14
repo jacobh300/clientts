@@ -72,9 +72,6 @@ export class Database
         this._identity = identity;
         this._connection = conn;
 
-        // TODO: Cache the token to localStorage and reuse it on reconnect if needed
-        // localStorage.setItem("stdb_access_token", token);
-
         console.log("Connection token:", token);
         console.log("Connected to SpacetimeDB:" + identity.toHexString());
 
