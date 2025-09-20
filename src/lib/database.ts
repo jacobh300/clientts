@@ -33,7 +33,7 @@ export class Database
         });
 
         DbConnection.builder()
-        .withUri("ws://173.238.30.221:3000")
+        .withUri("wss://ttschat.ddns.net")
         .withModuleName("sandbox")
         .withToken(auth)
         .onConnect(this.onConnect)
