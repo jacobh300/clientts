@@ -71,5 +71,12 @@ export async function getCurrentUserDebugLog()
 }
 
 export async function getCurrentUser() : Promise<User | null> {
-  return await userManager.getUser();
+  const user = await userManager.getUser();
+  if (user && !user.expired) {
+    return user;
+  }
+  else
+  {
+    return null;
+  }
 }

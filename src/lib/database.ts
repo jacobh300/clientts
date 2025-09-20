@@ -33,7 +33,7 @@ export class Database
         });
 
         DbConnection.builder()
-        .withUri("ws://192.168.1.143:3000")
+        .withUri("ws://173.238.30.221:3000")
         .withModuleName("sandbox")
         .withToken(auth)
         .onConnect(this.onConnect)
