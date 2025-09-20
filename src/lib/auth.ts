@@ -3,8 +3,8 @@ import { User, UserManager, WebStorageStateStore } from "oidc-client-ts";
 const oidcConfig = {
   authority: "https://dev-ttserecwbaauimqy.us.auth0.com",
   client_id: "tJVeFR6i8EIF1mID7tLET7fL61QifGkb",
-  redirect_uri: "https://ttschat.ddns.net/callback",
-  post_logout_redirect_uri: "https://ttschat.ddns.net/",
+  redirect_uri: "https://clientts.vercel.app/callback",
+  post_logout_redirect_uri: "https://clientts.vercel.app/",
   response_type: "code",
   scope: "openid profile email",
   userStore: new WebStorageStateStore({ store: window.localStorage }),
