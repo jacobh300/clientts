@@ -71,6 +71,7 @@ export async function getCurrentUserDebugLog()
 }
 
 export async function getCurrentUser() : Promise<User | null> {
+  try { await userManager.clearStaleState(); } catch {}
   const user = await userManager.getUser();
   if (user && !user.expired) {
     return user;
