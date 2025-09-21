@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { DbConnection, type ErrorContext, type EventContext, Message} from './module_bindings';
+import { DbConnection, type ErrorContext, type EventContext, Message, User } from './module_bindings';
 import { Identity } from "@clockworklabs/spacetimedb-sdk"
 import { useMessages, useUsers } from "./lib/hooks";
 import { getCurrentUser } from "./lib/auth";
@@ -10,8 +10,10 @@ import { NewMessageForm } from "./components/NewMessageForm";
 import { AuthButtons } from "./components/AuthButtons";
 import { Database } from "./lib/database";
 import { AuthUser } from "./lib/auth";
+import { UserList } from "./components/UserList";
 
 export type PrettyMessage = { senderName: string; text: string };
+export type UserInfo = {user : User | null};
 
 function App() {
   const [connected, setConnected] = useState(false);
@@ -63,12 +65,20 @@ function App() {
 
   const name = users.get(identity.toHexString())?.name || identity.toHexString().substring(0, 8);
 
+  const userList: UserInfo[] = [...users.values()]
+  .filter(u => u.online == true)
+  .map(user => ({
+    user: user,
+  }));
+
+
   return (
     <div className="App">
       <Profile conn={conn} name={name} identityHex={identity.toHexString()} />
       <MessageList messages={prettyMessages} />
-      <div className="system">
-        <h1>System</h1>
+      <UserList users = {userList} />
+      <div className="users">
+        <h1>Users</h1>
         <p>{systemMessage}</p>
       </div>
       <NewMessageForm conn={conn} />
