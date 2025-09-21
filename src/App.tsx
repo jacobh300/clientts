@@ -50,8 +50,12 @@ function App() {
     return <div className="App"><h1>Connecting...</h1></div>;
   }
 
-  const prettyMessages: PrettyMessage[] = messages
-    .sort((a, b) => (a.sent > b.sent ? 1 : -1))
+  const prettyMessages: PrettyMessage[] = [...messages]
+    .sort((a, b) => {
+    if (a.sent < b.sent) return -1;
+    if (a.sent > b.sent) return 1;
+    return 0; // stable when equal
+    })
     .map(m => ({
       senderName: users.get(m.sender.toHexString())?.name || m.sender.toHexString().substring(0, 8),
       text: m.text,
