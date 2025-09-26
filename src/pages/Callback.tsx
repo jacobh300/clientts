@@ -1,28 +1,63 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {UserManager, WebStorageStateStore} from "oidc-client-ts";
+import { oidcConfig, userManager } from "../lib/auth";
+import { AuthUser } from "../lib/auth";
 
-const oidcConfig = 
-{
-  authority: "https://dev-ttserecwbaauimqy.us.auth0.com",
-  client_id: "tJVeFR6i8EIF1mID7tLET7fL61QifGkb",
-  redirect_uri: "https://clientts-git-master-jacobh300s-projects.vercel.app/callback",
-  post_logout_redirect_uri: "https://clientts-git-master-jacobh300s-projects.vercel.app",
-  response_type: "code",
-  scope:"openid profile email",
-  userStore: new WebStorageStateStore({ store: window.localStorage })
-}
-export const userManager = new UserManager(oidcConfig);
 
 export default function Callback() {
+
+  const [loadingImage, setLoadingImage] = useState<string>("");
+
   useEffect(() => {
     userManager.signinRedirectCallback().then(user => {
-      console.log("Logged in user:", user);
-      window.location.href = "/"; // send them back to home
+      (async () => {  
+
+        if(user && user.profile && user.profile.picture)
+        {
+          setLoadingImage(user.profile.picture);
+        }
+
+        console.log("Logged in user:", user.profile.picture);
+        await delay(5000);
+        //wait a moment to debug to see console log
+        window.location.href = "/"; // send them back to home
+      })();
       
     }).catch(err => {
       console.error("Error during signin redirect callback:", err);
     });
   }, []);
 
-  return <div>Completing login...</div>;
+
+  return (
+    
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,                  // top:0,right:0,bottom:0,left:0
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",  // vertical center
+        alignItems: "center",      // horizontal center
+        width: "100vw",
+        height: "100vh",
+        textAlign: "center",
+      }}
+    >
+      <img
+        src={loadingImage}
+        width={120}
+        height={120}
+        style={{ imageRendering: "auto" }}
+      />
+      <p style={{ fontFamily: "sans-serif", marginTop: "1rem" }}>Signing in...</p>
+    </div>
+  );
+
+
+
+}
+
+function delay(ms: number) {
+  return new Promise( resolve => setTimeout(resolve, ms) );
 }
