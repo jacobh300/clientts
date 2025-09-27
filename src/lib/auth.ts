@@ -72,10 +72,23 @@ export async function getCurrentUserDebugLog()
     });
 }
 
+function checkUserValid(user: User | null) : Boolean 
+{
+  if(user && !user.expired && user.profile.exp > Date.now() / 1000)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+} 
+
 export async function getCurrentUser() : Promise<User | null> {
   try { await userManager.clearStaleState(); } catch {}
   const user = await userManager.getUser();
-  if (user && !user.expired) {
+  if (checkUserValid(user)){
+    console.log("Found user:", user);
     return user;
   }
   else

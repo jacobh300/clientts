@@ -23,7 +23,25 @@ function App() {
   const messages = useMessages(conn);
   const users = useUsers(conn);
   let token : string | null = null;
-  //Test
+
+  const prettyMessages: PrettyMessage[] = [...messages]
+    .sort((a, b) => {
+    if (a.sent < b.sent) return -1;
+    if (a.sent > b.sent) return 1;
+    return 0; // stable when equal
+    })
+    .map(m => ({
+      senderName: users.get(m.sender.toHexString())?.name || m.sender.toHexString().substring(0, 8),
+      text: m.text,
+    }));
+
+
+  const userList: UserInfo[] = [...users.values()]
+  .filter(u => u.online == true)
+  .map(user => ({
+    user: user,
+  }));
+
   useEffect(() => {
     const init = async () =>
     {
@@ -51,40 +69,24 @@ function App() {
   if (!conn || !connected || !identity) {
     return <div className="App"><h1>Connecting...</h1></div>;
   }
+  else
+  {
+    const name = users.get(identity.toHexString())?.name || identity.toHexString().substring(0, 8);
 
-  const prettyMessages: PrettyMessage[] = [...messages]
-    .sort((a, b) => {
-    if (a.sent < b.sent) return -1;
-    if (a.sent > b.sent) return 1;
-    return 0; // stable when equal
-    })
-    .map(m => ({
-      senderName: users.get(m.sender.toHexString())?.name || m.sender.toHexString().substring(0, 8),
-      text: m.text,
-    }));
-
-  const name = users.get(identity.toHexString())?.name || identity.toHexString().substring(0, 8);
-
-  const userList: UserInfo[] = [...users.values()]
-  .filter(u => u.online == true)
-  .map(user => ({
-    user: user,
-  }));
-
-
-  return (
-    <div className="App">
-      <Profile conn={conn} name={name} identityHex={identity.toHexString()} />
-      <MessageList messages={prettyMessages} />
-      <UserList users = {userList} />
-      <div className="users">
-        <h1>Users</h1>
-        <p>{systemMessage}</p>
+    return (
+      <div className="App">
+        <Profile conn={conn} name={name} identityHex={identity.toHexString()} />
+        <MessageList messages={prettyMessages} />
+        <UserList users = {userList} />
+        <div className="users">
+          <h1>Users</h1>
+          <p>{systemMessage}</p>
+        </div>
+        <NewMessageForm conn={conn} />
+        <AuthButtons />
       </div>
-      <NewMessageForm conn={conn} />
-      <AuthButtons />
-    </div>
-  );
+    );
+  }
 }
 
 export default App;
