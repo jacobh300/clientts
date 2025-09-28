@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DbConnection, User } from "../module_bindings";
+import { DbConnection } from "../module_bindings";
 
 type ProfileProps = {
   conn: DbConnection;
