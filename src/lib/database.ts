@@ -1,4 +1,4 @@
-import { DbConnection, type ErrorContext, type EventContext, Message, User } from '../module_bindings';
+import { DbConnection, type ErrorContext, type EventContext, MessageRow, UserRow } from '../module_bindings';
 import { Identity } from "@clockworklabs/spacetimedb-sdk"
 export class Database
 {

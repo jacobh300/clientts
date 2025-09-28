@@ -32,34 +32,34 @@ import {
   type ReducerEventContextInterface,
   type SubscriptionEventContextInterface,
 } from "@clockworklabs/spacetimedb-sdk";
-export type Message = {
-  sender: Identity,
-  sent: Timestamp,
-  text: string,
+export type UserRow = {
+  identity: Identity,
+  name: string | undefined,
+  online: boolean,
 };
 
 /**
  * A namespace for generated helper functions.
  */
-export namespace Message {
+export namespace UserRow {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
   */
   export function getTypeScriptAlgebraicType(): AlgebraicType {
     return AlgebraicType.createProductType([
-      new ProductTypeElement("sender", AlgebraicType.createIdentityType()),
-      new ProductTypeElement("sent", AlgebraicType.createTimestampType()),
-      new ProductTypeElement("text", AlgebraicType.createStringType()),
+      new ProductTypeElement("identity", AlgebraicType.createIdentityType()),
+      new ProductTypeElement("name", AlgebraicType.createOptionType(AlgebraicType.createStringType())),
+      new ProductTypeElement("online", AlgebraicType.createBoolType()),
     ]);
   }
 
-  export function serialize(writer: BinaryWriter, value: Message): void {
-    Message.getTypeScriptAlgebraicType().serialize(writer, value);
+  export function serialize(writer: BinaryWriter, value: UserRow): void {
+    UserRow.getTypeScriptAlgebraicType().serialize(writer, value);
   }
 
-  export function deserialize(reader: BinaryReader): Message {
-    return Message.getTypeScriptAlgebraicType().deserialize(reader);
+  export function deserialize(reader: BinaryReader): UserRow {
+    return UserRow.getTypeScriptAlgebraicType().deserialize(reader);
   }
 
 }

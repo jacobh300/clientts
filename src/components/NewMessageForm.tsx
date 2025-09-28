@@ -6,7 +6,18 @@ export function NewMessageForm({ conn }: { conn: DbConnection }) {
 
   const onMessageSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    conn.reducers.sendMessage(newMessage);
+
+    if(newMessage.startsWith("/")) {
+      // Handle commands here in the future
+      let command = newMessage.substring(1).toLowerCase();
+      console.log("Command entered: " + command);
+      conn.reducers.sendCommand(command, []);
+    }
+    else
+    {
+      conn.reducers.sendMessage(newMessage);
+    }
+
     setNewMessage("");
   };
 

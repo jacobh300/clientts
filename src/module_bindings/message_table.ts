@@ -32,7 +32,7 @@ import {
   type ReducerEventContextInterface,
   type SubscriptionEventContextInterface,
 } from "@clockworklabs/spacetimedb-sdk";
-import { Message } from "./message_type";
+import { MessageRow } from "./message_row_type";
 import { type EventContext, type Reducer, RemoteReducers, RemoteTables } from ".";
 
 /**
@@ -46,9 +46,9 @@ import { type EventContext, type Reducer, RemoteReducers, RemoteTables } from ".
  * like `ctx.db.message.on_insert(...)`.
  */
 export class MessageTableHandle {
-  tableCache: TableCache<Message>;
+  tableCache: TableCache<MessageRow>;
 
-  constructor(tableCache: TableCache<Message>) {
+  constructor(tableCache: TableCache<MessageRow>) {
     this.tableCache = tableCache;
   }
 
@@ -56,23 +56,23 @@ export class MessageTableHandle {
     return this.tableCache.count();
   }
 
-  iter(): Iterable<Message> {
+  iter(): Iterable<MessageRow> {
     return this.tableCache.iter();
   }
 
-  onInsert = (cb: (ctx: EventContext, row: Message) => void) => {
+  onInsert = (cb: (ctx: EventContext, row: MessageRow) => void) => {
     return this.tableCache.onInsert(cb);
   }
 
-  removeOnInsert = (cb: (ctx: EventContext, row: Message) => void) => {
+  removeOnInsert = (cb: (ctx: EventContext, row: MessageRow) => void) => {
     return this.tableCache.removeOnInsert(cb);
   }
 
-  onDelete = (cb: (ctx: EventContext, row: Message) => void) => {
+  onDelete = (cb: (ctx: EventContext, row: MessageRow) => void) => {
     return this.tableCache.onDelete(cb);
   }
 
-  removeOnDelete = (cb: (ctx: EventContext, row: Message) => void) => {
+  removeOnDelete = (cb: (ctx: EventContext, row: MessageRow) => void) => {
     return this.tableCache.removeOnDelete(cb);
   }
 }

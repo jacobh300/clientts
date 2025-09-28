@@ -38,6 +38,8 @@ import { ClientConnected } from "./client_connected_reducer.ts";
 export { ClientConnected };
 import { ClientDisconnected } from "./client_disconnected_reducer.ts";
 export { ClientDisconnected };
+import { SendCommand } from "./send_command_reducer.ts";
+export { SendCommand };
 import { SendMessage } from "./send_message_reducer.ts";
 export { SendMessage };
 import { SetName } from "./set_name_reducer.ts";
@@ -50,24 +52,24 @@ import { UserTableHandle } from "./user_table.ts";
 export { UserTableHandle };
 
 // Import and reexport all types
-import { Message } from "./message_type.ts";
-export { Message };
-import { User } from "./user_type.ts";
-export { User };
+import { MessageRow } from "./message_row_type.ts";
+export { MessageRow };
+import { UserRow } from "./user_row_type.ts";
+export { UserRow };
 
 const REMOTE_MODULE = {
   tables: {
     message: {
       tableName: "message",
-      rowType: Message.getTypeScriptAlgebraicType(),
+      rowType: MessageRow.getTypeScriptAlgebraicType(),
     },
     user: {
       tableName: "user",
-      rowType: User.getTypeScriptAlgebraicType(),
+      rowType: UserRow.getTypeScriptAlgebraicType(),
       primaryKey: "identity",
       primaryKeyInfo: {
         colName: "identity",
-        colType: User.getTypeScriptAlgebraicType().product.elements[0].algebraicType,
+        colType: UserRow.getTypeScriptAlgebraicType().product.elements[0].algebraicType,
       },
     },
   },
@@ -79,6 +81,10 @@ const REMOTE_MODULE = {
     ClientDisconnected: {
       reducerName: "ClientDisconnected",
       argsType: ClientDisconnected.getTypeScriptAlgebraicType(),
+    },
+    SendCommand: {
+      reducerName: "SendCommand",
+      argsType: SendCommand.getTypeScriptAlgebraicType(),
     },
     SendMessage: {
       reducerName: "SendMessage",
@@ -120,6 +126,7 @@ const REMOTE_MODULE = {
 export type Reducer = never
 | { name: "ClientConnected", args: ClientConnected }
 | { name: "ClientDisconnected", args: ClientDisconnected }
+| { name: "SendCommand", args: SendCommand }
 | { name: "SendMessage", args: SendMessage }
 | { name: "SetName", args: SetName }
 ;
@@ -141,6 +148,22 @@ export class RemoteReducers {
 
   removeOnClientDisconnected(callback: (ctx: ReducerEventContext) => void) {
     this.connection.offReducer("ClientDisconnected", callback);
+  }
+
+  sendCommand(command: string, args: string[]) {
+    const __args = { command, args };
+    let __writer = new BinaryWriter(1024);
+    SendCommand.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("SendCommand", __argsBuffer, this.setCallReducerFlags.sendCommandFlags);
+  }
+
+  onSendCommand(callback: (ctx: ReducerEventContext, command: string, args: string[]) => void) {
+    this.connection.onReducer("SendCommand", callback);
+  }
+
+  removeOnSendCommand(callback: (ctx: ReducerEventContext, command: string, args: string[]) => void) {
+    this.connection.offReducer("SendCommand", callback);
   }
 
   sendMessage(text: string) {
@@ -178,6 +201,11 @@ export class RemoteReducers {
 }
 
 export class SetReducerFlags {
+  sendCommandFlags: CallReducerFlags = 'FullUpdate';
+  sendCommand(flags: CallReducerFlags) {
+    this.sendCommandFlags = flags;
+  }
+
   sendMessageFlags: CallReducerFlags = 'FullUpdate';
   sendMessage(flags: CallReducerFlags) {
     this.sendMessageFlags = flags;
@@ -194,11 +222,11 @@ export class RemoteTables {
   constructor(private connection: DbConnectionImpl) {}
 
   get message(): MessageTableHandle {
-    return new MessageTableHandle(this.connection.clientCache.getOrCreateTable<Message>(REMOTE_MODULE.tables.message));
+    return new MessageTableHandle(this.connection.clientCache.getOrCreateTable<MessageRow>(REMOTE_MODULE.tables.message));
   }
 
   get user(): UserTableHandle {
-    return new UserTableHandle(this.connection.clientCache.getOrCreateTable<User>(REMOTE_MODULE.tables.user));
+    return new UserTableHandle(this.connection.clientCache.getOrCreateTable<UserRow>(REMOTE_MODULE.tables.user));
   }
 }
 

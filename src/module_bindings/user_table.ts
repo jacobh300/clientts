@@ -32,7 +32,7 @@ import {
   type ReducerEventContextInterface,
   type SubscriptionEventContextInterface,
 } from "@clockworklabs/spacetimedb-sdk";
-import { User } from "./user_type";
+import { UserRow } from "./user_row_type";
 import { type EventContext, type Reducer, RemoteReducers, RemoteTables } from ".";
 
 /**
@@ -46,9 +46,9 @@ import { type EventContext, type Reducer, RemoteReducers, RemoteTables } from ".
  * like `ctx.db.user.on_insert(...)`.
  */
 export class UserTableHandle {
-  tableCache: TableCache<User>;
+  tableCache: TableCache<UserRow>;
 
-  constructor(tableCache: TableCache<User>) {
+  constructor(tableCache: TableCache<UserRow>) {
     this.tableCache = tableCache;
   }
 
@@ -56,7 +56,7 @@ export class UserTableHandle {
     return this.tableCache.count();
   }
 
-  iter(): Iterable<User> {
+  iter(): Iterable<UserRow> {
     return this.tableCache.iter();
   }
   /**
@@ -73,7 +73,7 @@ export class UserTableHandle {
   identity = {
     // Find the subscribed row whose `identity` column value is equal to `col_val`,
     // if such a row is present in the client cache.
-    find: (col_val: Identity): User | undefined => {
+    find: (col_val: Identity): UserRow | undefined => {
       for (let row of this.tableCache.iter()) {
         if (deepEqual(row.identity, col_val)) {
           return row;
@@ -82,27 +82,27 @@ export class UserTableHandle {
     },
   };
 
-  onInsert = (cb: (ctx: EventContext, row: User) => void) => {
+  onInsert = (cb: (ctx: EventContext, row: UserRow) => void) => {
     return this.tableCache.onInsert(cb);
   }
 
-  removeOnInsert = (cb: (ctx: EventContext, row: User) => void) => {
+  removeOnInsert = (cb: (ctx: EventContext, row: UserRow) => void) => {
     return this.tableCache.removeOnInsert(cb);
   }
 
-  onDelete = (cb: (ctx: EventContext, row: User) => void) => {
+  onDelete = (cb: (ctx: EventContext, row: UserRow) => void) => {
     return this.tableCache.onDelete(cb);
   }
 
-  removeOnDelete = (cb: (ctx: EventContext, row: User) => void) => {
+  removeOnDelete = (cb: (ctx: EventContext, row: UserRow) => void) => {
     return this.tableCache.removeOnDelete(cb);
   }
 
   // Updates are only defined for tables with primary keys.
-  onUpdate = (cb: (ctx: EventContext, oldRow: User, newRow: User) => void) => {
+  onUpdate = (cb: (ctx: EventContext, oldRow: UserRow, newRow: UserRow) => void) => {
     return this.tableCache.onUpdate(cb);
   }
 
-  removeOnUpdate = (cb: (ctx: EventContext, onRow: User, newRow: User) => void) => {
+  removeOnUpdate = (cb: (ctx: EventContext, onRow: UserRow, newRow: UserRow) => void) => {
     return this.tableCache.removeOnUpdate(cb);
   }}
