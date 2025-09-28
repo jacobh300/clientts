@@ -5,7 +5,7 @@ import { Identity } from "@clockworklabs/spacetimedb-sdk"
 import { useMessages, useUsers } from "./lib/hooks";
 import { getCurrentUser } from "./lib/auth";
 import { Profile } from "./components/Profile";
-import { MessageList } from "./components/MessageList";
+import { Chat } from "./components/Chat";
 import { NewMessageForm } from "./components/NewMessageForm";
 import { AuthButtons } from "./components/AuthButtons";
 import { Database } from "./lib/database";
@@ -20,20 +20,11 @@ function App() {
   const [identity, setIdentity] = useState<Identity | null>(null);
   const [conn, setConn] = useState<DbConnection | null>(null);
   const [systemMessage, setSystemMessage] = useState("");
-  const messages = useMessages(conn);
+
   const users = useUsers(conn);
   let token : string | null = null;
 
-  const prettyMessages: PrettyMessage[] = [...messages]
-    .sort((a, b) => {
-    if (a.sent < b.sent) return -1;
-    if (a.sent > b.sent) return 1;
-    return 0; // stable when equal
-    })
-    .map(m => ({
-      senderName: users.get(m.sender.toHexString())?.name || m.sender.toHexString().substring(0, 8),
-      text: m.text,
-    }));
+
 
 
   const userList: UserInfo[] = [...users.values()]
@@ -76,7 +67,7 @@ function App() {
     return (
       <div className="App">
         <Profile conn={conn} name={name} identityHex={identity.toHexString()} />
-        <MessageList messages={prettyMessages} />
+        <Chat />
         <UserList users = {userList} />
         <div className="users">
           <h1>Users</h1>

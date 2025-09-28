@@ -48,6 +48,8 @@
   
   /* Ensure this section scrolls if content is long */
   overflow-y: auto;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   padding: 1rem;
   display: flex;
   flex-direction: column;

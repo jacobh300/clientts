@@ -64,7 +64,7 @@ export class Database
             Database.Instance = new Database();
             return Database.Instance;
         }
-        console.log("Returning existing database instance.");
+
         return Database.Instance;
     }
     
