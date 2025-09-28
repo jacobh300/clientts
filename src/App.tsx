@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { DbConnection, type ErrorContext, type EventContext, Message, User } from './module_bindings';
+import { DbConnection, type ErrorContext, type EventContext, MessageRow, UserRow } from './module_bindings';
 import { Identity } from "@clockworklabs/spacetimedb-sdk"
 import { useMessages, useUsers } from "./lib/hooks";
 import { getCurrentUser } from "./lib/auth";
@@ -13,7 +13,7 @@ import { AuthUser } from "./lib/auth";
 import { UserList } from "./components/UserList";
 
 export type PrettyMessage = { senderName: string; text: string };
-export type UserInfo = {user : User | null};
+export type UserInfo = {user : UserRow | null};
 
 function App() {
   const [connected, setConnected] = useState(false);

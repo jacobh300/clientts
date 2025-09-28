@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {useMessages, useUsers} from "../lib/hooks";
 import { Database } from "../lib/database";
-import { Message } from "../module_bindings";
+import { MessageRow } from "../module_bindings";
 
 
 export type PrettyMessage = { senderName: string; text: string };
