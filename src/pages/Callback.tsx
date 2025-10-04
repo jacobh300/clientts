@@ -18,7 +18,7 @@ export default function Callback() {
         }
 
         console.log("Logged in user:", user.profile.picture);
-        await delay(5000);
+        await delay(600);
         //wait a moment to debug to see console log
         window.location.href = "/"; // send them back to home
       })();

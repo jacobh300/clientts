@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { DbConnection, type ErrorContext, type EventContext, MessageRow, UserRow } from './module_bindings';
-import { Identity } from "@clockworklabs/spacetimedb-sdk"
-import { useMessages, useUsers } from "./lib/hooks";
+import { Identity } from "spacetimedb"
+import { useUsers } from "./lib/hooks";
 import { getCurrentUser } from "./lib/auth";
 import { Profile } from "./components/Profile";
 import { Chat } from "./components/Chat";
@@ -22,10 +22,7 @@ function App() {
   const [systemMessage, setSystemMessage] = useState("");
 
   const users = useUsers(conn);
-  let token : string | null = null;
-
-
-
+  const db = Database.getInstance();
 
   const userList: UserInfo[] = [...users.values()]
   .filter(u => u.online == true)
@@ -37,9 +34,7 @@ function App() {
     const init = async () =>
     {
       let authUser = new AuthUser(await getCurrentUser());
-      token = authUser.getAuthToken();
-    
-      const db = Database.getInstance();
+      let token = authUser.getAuthToken();
       try
       {
         await db.Init(token || "");

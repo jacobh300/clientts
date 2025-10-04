@@ -1,5 +1,5 @@
 import { DbConnection, type ErrorContext, type EventContext, MessageRow, UserRow } from '../module_bindings';
-import { Identity } from "@clockworklabs/spacetimedb-sdk"
+import { Identity } from "spacetimedb"
 export class Database
 {
     public static Instance: Database;
@@ -37,7 +37,7 @@ export class Database
         .withUri("ws://localhost:3000")
         .withModuleName("sandbox")
         .withToken(auth)
-        .onConnect(this.onConnect)
+        .onConnect(this.onConnected)
         .onDisconnect(this.onDisconnect)
         .onConnectError(this.onConnectError)
         .build()
@@ -69,7 +69,7 @@ export class Database
     }
     
 
-    private onConnect = (conn: DbConnection, identity: Identity, token: string) => {
+    private onConnected = (conn: DbConnection, identity: Identity, token: string) => {
         this._identity = identity;
         this._connection = conn;
 

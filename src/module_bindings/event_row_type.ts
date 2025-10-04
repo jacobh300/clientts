@@ -27,15 +27,15 @@ import {
   type SubscriptionEventContextInterface as __SubscriptionEventContextInterface,
 } from "spacetimedb";
 
-export type UserRow = {
+export type EventRow = {
+  id: number,
   identity: __Identity,
-  name: string | undefined,
-  online: boolean,
+  data: string,
 };
 /**
  * An object for generated helper functions.
  */
-export const UserRow = {
+export const EventRow = {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
@@ -43,23 +43,23 @@ export const UserRow = {
   getTypeScriptAlgebraicType(): __AlgebraicTypeType {
     return __AlgebraicTypeValue.Product({
       elements: [
+        { name: "id", algebraicType: __AlgebraicTypeValue.I32},
         { name: "identity", algebraicType: __AlgebraicTypeValue.createIdentityType()},
-        { name: "name", algebraicType: __AlgebraicTypeValue.createOptionType(__AlgebraicTypeValue.String)},
-        { name: "online", algebraicType: __AlgebraicTypeValue.Bool},
+        { name: "data", algebraicType: __AlgebraicTypeValue.String},
       ]
     });
   },
 
-  serialize(writer: __BinaryWriter, value: UserRow): void {
-    __AlgebraicTypeValue.serializeValue(writer, UserRow.getTypeScriptAlgebraicType(), value);
+  serialize(writer: __BinaryWriter, value: EventRow): void {
+    __AlgebraicTypeValue.serializeValue(writer, EventRow.getTypeScriptAlgebraicType(), value);
   },
 
-  deserialize(reader: __BinaryReader): UserRow {
-    return __AlgebraicTypeValue.deserializeValue(reader, UserRow.getTypeScriptAlgebraicType());
+  deserialize(reader: __BinaryReader): EventRow {
+    return __AlgebraicTypeValue.deserializeValue(reader, EventRow.getTypeScriptAlgebraicType());
   },
 
 }
 
-export default UserRow;
+export default EventRow;
 
 

@@ -1,6 +1,6 @@
-import { User } from "../module_bindings/user_type";
+import { UserRow } from "../module_bindings/user_row_type";
 
-type UserInfo = { user: User | null; };
+type UserInfo = { user: UserRow | null; };
 
 export function UserList({ users }: { users: UserInfo[] }) {
   return (

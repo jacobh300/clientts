@@ -26,24 +26,24 @@ import {
   type ReducerEventContextInterface as __ReducerEventContextInterface,
   type SubscriptionEventContextInterface as __SubscriptionEventContextInterface,
 } from "spacetimedb";
-import { MessageRow } from "./message_row_type";
+import { EventRow } from "./event_row_type";
 import { type EventContext, type Reducer, RemoteReducers, RemoteTables } from ".";
 declare type __keep = [EventContext, Reducer, RemoteReducers, RemoteTables];
 
 /**
- * Table handle for the table `message`.
+ * Table handle for the table `events`.
  *
- * Obtain a handle from the [`message`] property on [`RemoteTables`],
- * like `ctx.db.message`.
+ * Obtain a handle from the [`events`] property on [`RemoteTables`],
+ * like `ctx.db.events`.
  *
  * Users are encouraged not to explicitly reference this type,
  * but to directly chain method calls,
- * like `ctx.db.message.on_insert(...)`.
+ * like `ctx.db.events.on_insert(...)`.
  */
-export class MessageTableHandle {
-  tableCache: __TableCache<MessageRow>;
+export class EventsTableHandle {
+  tableCache: __TableCache<EventRow>;
 
-  constructor(tableCache: __TableCache<MessageRow>) {
+  constructor(tableCache: __TableCache<EventRow>) {
     this.tableCache = tableCache;
   }
 
@@ -51,23 +51,23 @@ export class MessageTableHandle {
     return this.tableCache.count();
   }
 
-  iter(): Iterable<MessageRow> {
+  iter(): Iterable<EventRow> {
     return this.tableCache.iter();
   }
 
-  onInsert = (cb: (ctx: EventContext, row: MessageRow) => void) => {
+  onInsert = (cb: (ctx: EventContext, row: EventRow) => void) => {
     return this.tableCache.onInsert(cb);
   }
 
-  removeOnInsert = (cb: (ctx: EventContext, row: MessageRow) => void) => {
+  removeOnInsert = (cb: (ctx: EventContext, row: EventRow) => void) => {
     return this.tableCache.removeOnInsert(cb);
   }
 
-  onDelete = (cb: (ctx: EventContext, row: MessageRow) => void) => {
+  onDelete = (cb: (ctx: EventContext, row: EventRow) => void) => {
     return this.tableCache.onDelete(cb);
   }
 
-  removeOnDelete = (cb: (ctx: EventContext, row: MessageRow) => void) => {
+  removeOnDelete = (cb: (ctx: EventContext, row: EventRow) => void) => {
     return this.tableCache.removeOnDelete(cb);
   }
 }
