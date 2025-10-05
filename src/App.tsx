@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import { DbConnection, type ErrorContext, type EventContext, MessageRow, UserRow } from './module_bindings';
 import { Identity } from "spacetimedb"
-import { useUsers } from "./lib/hooks";
+import { useEvents, useUsers } from "./lib/hooks";
 import { getCurrentUser } from "./lib/auth";
 import { Profile } from "./components/Profile";
 import { Chat } from "./components/Chat";
@@ -22,6 +22,7 @@ function App() {
   const [systemMessage, setSystemMessage] = useState("");
 
   const users = useUsers(conn);
+  const eventMessage = useEvents(conn);
   const db = Database.getInstance();
 
   const userList: UserInfo[] = [...users.values()]
@@ -30,27 +31,26 @@ function App() {
     user: user,
   }));
 
-  useEffect(() => {
-    const init = async () =>
+  const init = async () =>
+  {
+    let authUser = new AuthUser(await getCurrentUser());
+    let token = authUser.getAuthToken();
+
+    try
     {
-      let authUser = new AuthUser(await getCurrentUser());
-      let token = authUser.getAuthToken();
-      try
-      {
-        await db.Init(token || "");
-        setConn(db.getConnection());
-        setIdentity(db.getIdentity());
-        setConnected(true);
-      }
-      catch (err)
-      {
-        console.error("Error initializing database:", err);
-        setConnected(false);
-      } 
-    };
-  
-    init();
-  }, []);
+      await db.Init(token || "");
+      setConn(db.getConnection());
+      setIdentity(db.getIdentity());
+      setConnected(true);
+    }
+    catch (err)
+    {
+      console.error("Error initializing database:", err);
+      setConnected(false);
+    } 
+  };
+
+  useEffect(() => { init(); }, []);
 
   if (!conn || !connected || !identity) {
     return <div className="App"><h1>Connecting...</h1></div>;

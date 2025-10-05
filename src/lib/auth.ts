@@ -74,7 +74,7 @@ export async function getCurrentUserDebugLog()
 
 function checkUserValid(user: User | null) : Boolean 
 {
-  if(user && !user.expired && user.profile.exp > Date.now() / 1000)
+  if(user && !user.expired)
   {
     return true;
   }

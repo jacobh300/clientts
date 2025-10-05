@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DbConnection, type EventContext, MessageRow, UserRow } from "../module_bindings";
+import { DbConnection, type EventContext, MessageRow, UserRow, EventRow } from "../module_bindings";
 
 export function useMessages(conn: DbConnection | null): MessageRow[] {
   const [messages, setMessages] = useState<MessageRow[]>([]);
@@ -7,6 +7,9 @@ export function useMessages(conn: DbConnection | null): MessageRow[] {
     if (!conn) return;
     const onInsert = (_ctx: EventContext, message: MessageRow) => {
       setMessages(prev => [...prev, message]);
+      for(const test of conn.db.events.iter()) {
+        console.log("Event row data:", test);
+      }
     };
     conn.db.message.onInsert(onInsert);
 
@@ -68,12 +71,31 @@ export function useUsers(conn: DbConnection | null): Map<string, UserRow> {
 }
 
 
-export function useServerMessages(conn: DbConnection | null): String {
-  console.log("useServerMessages called");
+export function useEvents(conn: DbConnection | null): string {
+  const[event, setEvent] = useState<string>("");  
   
   useEffect(() => {
     if(!conn) return;
+    console.log("Setting up event listener");
+    const onInsert = (_ctx: EventContext, event: EventRow) => {
+      setEvent(event.data);
+      console.log("New message inserted:", event.data);
+    }
+    conn.db.events.onInsert(onInsert);
+
+    const onDelete = (_ctx: EventContext, event: EventRow) => {
+      setEvent("");
+      console.log("Message deleted:", event.data);
+    }
+    conn.db.events.onDelete(onDelete);
+
+    return () =>
+    {
+      conn.db.events.removeOnInsert(onInsert);
+      conn.db.events.removeOnDelete(onDelete);
+    }
+
   }, [conn]);
 
-  return "";
+  return event;
 }

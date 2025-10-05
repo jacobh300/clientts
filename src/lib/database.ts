@@ -82,7 +82,7 @@ export class Database
 
         conn.subscriptionBuilder().onApplied(() => {
             console.log("SDK client cache initialized.");
-        }).subscribe(["SELECT * FROM message", "SELECT * FROM user"]);
+        }).subscribe(["SELECT * FROM message", "SELECT * FROM user", "SELECT * FROM events"]);
 
         if (this._resolveReady) {
             this._resolveReady(Database.Instance);
