@@ -9,9 +9,11 @@ export function NewMessageForm({ conn }: { conn: DbConnection }) {
 
     if(newMessage.startsWith("/")) {
       // Handle commands here in the future
-      let command = newMessage.substring(1).toLowerCase();
-      console.log("Command entered: " + command);
-      conn.reducers.sendCommand(command, []);
+      let params = newMessage.toLowerCase().split(" ");
+      let command = params[0].slice(1);
+      params = params.slice(1);
+      console.log("Command entered: " + command + " with params: " + params);
+      conn.reducers.sendCommand(command, params);
     }
     else
     {
