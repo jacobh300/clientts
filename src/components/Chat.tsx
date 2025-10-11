@@ -3,12 +3,7 @@ import {useMessages, useUsers} from "../lib/hooks";
 import { Database } from "../lib/database";
 import { MessageRow } from "../module_bindings";
 
-
 export type PrettyMessage = { senderName: string; text: string };
-
-
-
-
 
 export function Chat() {
 
@@ -35,7 +30,7 @@ export function Chat() {
 
   return (
     <div className="message">
-      <h1>Messages</h1>
+      <h1>Chat</h1>
       {prettyMessages.length < 1 && <p>No messages</p>}
       <div>
         {prettyMessages.map((message, key) => (

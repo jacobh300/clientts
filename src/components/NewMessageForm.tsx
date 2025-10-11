@@ -29,7 +29,6 @@ export function NewMessageForm({ conn }: { conn: DbConnection }) {
         onSubmit={onMessageSubmit}
         style={{ display: "flex", flexDirection: "column", width: "50%", margin: "0 auto" }}
       >
-        <h3>New Message</h3>
         <textarea
           value={newMessage}
           onChange={e => setNewMessage(e.target.value)}

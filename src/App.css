@@ -6,12 +6,12 @@
       2) Main content (left = message, right = system)
       3) New message
   */
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto auto 1fr auto;
   /* 2 columns: left for chat, right for system */
   grid-template-columns: 2fr 1fr;
 
   height: 100vh; /* fill viewport height */
-  width: clamp(300px, 100%, 1200px);
+  width: clamp(100vw, 100%, 1200px);
   margin: 0 auto;
 }
 
@@ -41,9 +41,24 @@
   background-color: var(--textbox-color);
 }
 
+.Pages {
+  grid-column: 1 / 3;
+  padding: 1rem 1rem;
+  border-bottom: 1px solid var(--theme-color);
+  background-color: var(--textbox-color);
+}
+
+.Pages .page_buttons
+{
+  display: flex;
+  background:#424242;
+  color: #ffffff;
+  gap: 1rem;
+}
+
 /* ----- Chat Messages (Row 2, Col 1) ----- */
 .message {
-  grid-row: 2 / 3;
+  grid-row: 3 / 4;
   grid-column: 1 / 2;
   
   /* Ensure this section scrolls if content is long */
@@ -58,19 +73,6 @@
 
 .message h1 {
   margin-right: 0.5rem;
-}
-
-/* ----- System Panel (Row 2, Col 2) ----- */
-.system {
-  grid-row: 2 / 3;
-  grid-column: 2 / 3;
-
-  /* Also scroll independently if needed */
-  overflow-y: auto;
-  padding: 1rem;
-  border-left: 1px solid var(--theme-color);
-  white-space: pre-wrap;
-  font-family: monospace;
 }
 
 /* ----- New Message (Row 3, spans columns 1-2) ----- */
