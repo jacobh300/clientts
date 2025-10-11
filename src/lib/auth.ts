@@ -1,5 +1,5 @@
 import { User, UserManager, WebStorageStateStore } from "oidc-client-ts";
-
+const API_AUDIENCE = "https://sandbox.api"; // must match Auth0 API Identifier
 export const oidcConfig = {
   authority: "https://dev-ttserecwbaauimqy.us.auth0.com",
   client_id: "tJVeFR6i8EIF1mID7tLET7fL61QifGkb",
@@ -9,6 +9,7 @@ export const oidcConfig = {
   post_logout_redirect_uri: "http://localhost:5173/",
   response_type: "code",
   scope: "openid profile email",
+  extraQueryParams: { audience: API_AUDIENCE }, // use extraQueryParams
   userStore: new WebStorageStateStore({ store: window.localStorage }),
 };
 
@@ -24,15 +25,9 @@ export class AuthUser
   public getAuthToken(): string | null
   {
     if(!this._user) return null;
-
     if(this._user.access_token && this._user.access_token.split(".").length === 3)
     {
       return this._user.access_token;
-    }
-
-    if(this._user.id_token && typeof this._user.id_token === "string")
-    {
-      return this._user.id_token;
     }
 
     return null;
