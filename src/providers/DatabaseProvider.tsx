@@ -18,7 +18,7 @@ const dbCtx = createContext<DbCtx>({
   connected: false,
 });
 
-export function ProviderDatabase({children}: {children: React.ReactNode})
+export function DatabaseProvider({children}: {children: React.ReactNode})
 {
     const db = Database.getInstance();
     const [conn, setConn] = useState<DbConnection | null>(null);
@@ -33,6 +33,7 @@ export function ProviderDatabase({children}: {children: React.ReactNode})
         try
         {
             await db.Init(token || "");
+            console.log("Database initialized");  
             setConn(db.getConnection());
             setIdentity(db.getIdentity());
             setConnected(true);

@@ -10,6 +10,11 @@ export function useMessages(conn: DbConnection | null): MessageRow[] {
     };
     conn.db.message.onInsert(onInsert);
 
+    if(conn.db.message != null)
+    {
+      setMessages(Array.from(conn.db.message.iter()));
+    }
+
     const onDelete = (_ctx: EventContext, message: MessageRow) => {
       setMessages(prev =>
         prev.filter(
@@ -36,6 +41,17 @@ export function useUsers(conn: DbConnection | null): Map<string, UserRow> {
 
   useEffect(() => {
     if (!conn) return;
+
+    if(conn.db.user != null)
+    {
+      const initialUsers = Array.from(conn.db.user.iter());
+      const userMap = new Map<string, UserRow>();
+      initialUsers.forEach(user => {
+        userMap.set(user.identity.toHexString(), user);
+      });
+      setUsers(userMap);
+    }
+
     const onInsert = (_ctx: EventContext, user: UserRow) => {
       setUsers(prev => new Map(prev.set(user.identity.toHexString(), user)));
     };

@@ -5,10 +5,10 @@ import App from './App.tsx'
 import { PageChat } from './pages/PageChat.tsx'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Callback from "./pages/Callback";
-import { ProviderDatabase } from './providers/DatabaseProvider.tsx'
+import { DatabaseProvider } from './providers/DatabaseProvider.tsx'
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-  <ProviderDatabase>
+<StrictMode>
+  <DatabaseProvider>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
@@ -16,6 +16,6 @@ createRoot(document.getElementById('root')).render(
         <Route path="/chat" element={<PageChat />} />
       </Routes>
     </BrowserRouter>
-  </ProviderDatabase>
+  </DatabaseProvider>
 </StrictMode>,
 )
