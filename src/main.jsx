@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
+import './styles/index.css'
 import App from './App.tsx'
 import { PageChat } from './pages/PageChat.tsx'
 import { BrowserRouter, Routes, Route } from "react-router-dom";

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./App.css";
+import "./styles/App.css";
 import { DbConnection, type ErrorContext, type EventContext, MessageRow, UserRow } from './module_bindings';
 import { Identity } from "spacetimedb"
 import { useEvents, useUsers } from "./lib/hooks";

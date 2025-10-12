@@ -7,9 +7,6 @@ export function useMessages(conn: DbConnection | null): MessageRow[] {
     if (!conn) return;
     const onInsert = (_ctx: EventContext, message: MessageRow) => {
       setMessages(prev => [...prev, message]);
-      for(const test of conn.db.events.iter()) {
-        console.log("Event row data:", test);
-      }
     };
     conn.db.message.onInsert(onInsert);
 

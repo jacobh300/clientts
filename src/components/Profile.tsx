@@ -20,12 +20,14 @@ export function Profile({ conn, name, identityHex }: ProfileProps) {
   return (
     <div className="profile">
       <h1>Profile</h1>
-      {!editing ? (
+      {!editing ? 
+      (
         <>
           <p>{name}</p>
           <button onClick={() => setEditing(true)}>Edit Name</button>
         </>
-      ) : (
+      ) : 
+      (
         <form onSubmit={onSubmitNewName}>
           <input
             type="text"
