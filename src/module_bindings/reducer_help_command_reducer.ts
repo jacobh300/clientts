@@ -27,14 +27,11 @@ import {
   type SubscriptionEventContextInterface as __SubscriptionEventContextInterface,
 } from "spacetimedb";
 
-export type SendCommand = {
-  command: string,
-  args: string[],
-};
+export type ReducerHelpCommand = {};
 /**
  * An object for generated helper functions.
  */
-export const SendCommand = {
+export const ReducerHelpCommand = {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
@@ -42,21 +39,19 @@ export const SendCommand = {
   getTypeScriptAlgebraicType(): __AlgebraicTypeType {
     return __AlgebraicTypeValue.Product({
       elements: [
-        { name: "command", algebraicType: __AlgebraicTypeValue.String},
-        { name: "args", algebraicType: __AlgebraicTypeValue.Array(__AlgebraicTypeValue.String)},
       ]
     });
   },
 
-  serialize(writer: __BinaryWriter, value: SendCommand): void {
-    __AlgebraicTypeValue.serializeValue(writer, SendCommand.getTypeScriptAlgebraicType(), value);
+  serialize(writer: __BinaryWriter, value: ReducerHelpCommand): void {
+    __AlgebraicTypeValue.serializeValue(writer, ReducerHelpCommand.getTypeScriptAlgebraicType(), value);
   },
 
-  deserialize(reader: __BinaryReader): SendCommand {
-    return __AlgebraicTypeValue.deserializeValue(reader, SendCommand.getTypeScriptAlgebraicType());
+  deserialize(reader: __BinaryReader): ReducerHelpCommand {
+    return __AlgebraicTypeValue.deserializeValue(reader, ReducerHelpCommand.getTypeScriptAlgebraicType());
   },
 
 }
 
-export default SendCommand;
+export default ReducerHelpCommand;
 

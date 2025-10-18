@@ -73,16 +73,12 @@ export class Database
         this._identity = identity;
         this._connection = conn;
 
-        console.log("Connection token:", token);
         console.log("Connected to SpacetimeDB:" + identity.toHexString());
 
-        conn.reducers.onSendMessage(() => {
-            console.log("Message sent.");
-        });
-
-        conn.subscriptionBuilder().onApplied(() => {
-            console.log("SDK client cache initialized.");
-        }).subscribe(["SELECT * FROM message", "SELECT * FROM user", "SELECT * FROM events"]);
+        conn.subscriptionBuilder()
+            .onApplied(this.onSubscriptionApplied)
+            .onError(this.onSubscriptionError)
+            .subscribe(["SELECT * FROM message", "SELECT * FROM user", "SELECT * FROM response"]);
 
         if (this._resolveReady) {
             this._resolveReady(Database.Instance);
@@ -90,6 +86,16 @@ export class Database
             this._rejectReady = undefined;
         }
     };
+
+    private onSubscriptionApplied() 
+    {
+        console.log("SDK client cache initialized.");
+    }
+
+    private onSubscriptionError = (ctx: ErrorContext) => 
+    {
+        console.error("Subscription error: ", ctx.event);
+    }
 
     private onDisconnect = () => {
         console.log("Disconnected from SpacetimeDB");

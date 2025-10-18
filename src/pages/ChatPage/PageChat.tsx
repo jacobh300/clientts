@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { Chat } from "../components/Chat";
-import { useDb } from "../providers/DatabaseProvider";
+import { Chat } from "../../components/ChatComponent/Chat";
+import { useDb } from "../../providers/DatabaseProvider";
 import "./PageChat.css";
 import { useEffect } from "react";
-
 
 export function PageChat()
 {

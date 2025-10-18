@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
-import { DbConnection, type EventContext, MessageRow, UserRow, EventRow } from "../module_bindings";
+import { DbConnection, type EventContext, MessageRow, UserRow, ResponseRow } from "../module_bindings";
 
 export function useMessages(conn: DbConnection | null): MessageRow[] {
   const [messages, setMessages] = useState<MessageRow[]>([]);
   useEffect(() => {
     if (!conn) return;
-    const onInsert = (_ctx: EventContext, message: MessageRow) => {
-      setMessages(prev => [...prev, message]);
-    };
-    conn.db.message.onInsert(onInsert);
 
     if(conn.db.message != null)
     {
       setMessages(Array.from(conn.db.message.iter()));
     }
+
+    const onInsert = (_ctx: EventContext, message: MessageRow) => {
+      setMessages(prev => [...prev, message]);
+    };
+    conn.db.message.onInsert(onInsert);
+
 
     const onDelete = (_ctx: EventContext, message: MessageRow) => {
       setMessages(prev =>
@@ -51,12 +53,12 @@ export function useUsers(conn: DbConnection | null): Map<string, UserRow> {
       });
       setUsers(userMap);
     }
-
+    //Insert
     const onInsert = (_ctx: EventContext, user: UserRow) => {
       setUsers(prev => new Map(prev.set(user.identity.toHexString(), user)));
     };
     conn.db.user.onInsert(onInsert);
-
+    //Update
     const onUpdate = (_ctx: EventContext, oldUser: UserRow, newUser: UserRow) => {
       setUsers(prev => {
         prev.delete(oldUser.identity.toHexString());
@@ -64,7 +66,7 @@ export function useUsers(conn: DbConnection | null): Map<string, UserRow> {
       });
     };
     conn.db.user.onUpdate(onUpdate);
-
+    //Delete
     const onDelete = (_ctx: EventContext, user: UserRow) => {
       setUsers(prev => {
         prev.delete(user.identity.toHexString());
@@ -84,28 +86,27 @@ export function useUsers(conn: DbConnection | null): Map<string, UserRow> {
 }
 
 
-export function useEvents(conn: DbConnection | null): string {
+export function useResponse(conn: DbConnection | null): string {
   const[event, setEvent] = useState<string>("");  
   
   useEffect(() => {
     if(!conn) return;
     console.log("Setting up event listener");
-    const onInsert = (_ctx: EventContext, event: EventRow) => {
+    const onInsert = (_ctx: EventContext, event: ResponseRow) => {
       setEvent(event.data);
       console.log("New message inserted:", event.data);
     }
-    conn.db.events.onInsert(onInsert);
+    conn.db.response.onInsert(onInsert);
 
-    const onDelete = (_ctx: EventContext, event: EventRow) => {
-      setEvent("");
+    const onDelete = (_ctx: EventContext, event: ResponseRow) => {
       console.log("Message deleted:", event.data);
     }
-    conn.db.events.onDelete(onDelete);
+    conn.db.response.onDelete(onDelete);
 
     return () =>
     {
-      conn.db.events.removeOnInsert(onInsert);
-      conn.db.events.removeOnDelete(onDelete);
+      conn.db.response.removeOnInsert(onInsert);
+      conn.db.response.removeOnDelete(onDelete);
     }
 
   }, [conn]);

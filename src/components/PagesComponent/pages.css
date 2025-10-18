@@ -1,0 +1,17 @@
+.Pages {
+  grid-column: 1 / 3;
+
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 1rem;
+  border-bottom: 1px solid var(--theme-color);
+  background-color: var(--textbox-color);
+}
+
+.Pages .page_buttons
+{
+  display: flex;
+  background:#424242;
+  color: #ffffff;
+  gap: 1rem;
+}

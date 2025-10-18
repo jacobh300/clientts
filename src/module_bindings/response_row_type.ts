@@ -27,15 +27,16 @@ import {
   type SubscriptionEventContextInterface as __SubscriptionEventContextInterface,
 } from "spacetimedb";
 
-export type EventRow = {
+export type ResponseRow = {
   id: number,
   identity: __Identity,
+  sent: __Timestamp,
   data: string,
 };
 /**
  * An object for generated helper functions.
  */
-export const EventRow = {
+export const ResponseRow = {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
@@ -45,21 +46,22 @@ export const EventRow = {
       elements: [
         { name: "id", algebraicType: __AlgebraicTypeValue.I32},
         { name: "identity", algebraicType: __AlgebraicTypeValue.createIdentityType()},
+        { name: "sent", algebraicType: __AlgebraicTypeValue.createTimestampType()},
         { name: "data", algebraicType: __AlgebraicTypeValue.String},
       ]
     });
   },
 
-  serialize(writer: __BinaryWriter, value: EventRow): void {
-    __AlgebraicTypeValue.serializeValue(writer, EventRow.getTypeScriptAlgebraicType(), value);
+  serialize(writer: __BinaryWriter, value: ResponseRow): void {
+    __AlgebraicTypeValue.serializeValue(writer, ResponseRow.getTypeScriptAlgebraicType(), value);
   },
 
-  deserialize(reader: __BinaryReader): EventRow {
-    return __AlgebraicTypeValue.deserializeValue(reader, EventRow.getTypeScriptAlgebraicType());
+  deserialize(reader: __BinaryReader): ResponseRow {
+    return __AlgebraicTypeValue.deserializeValue(reader, ResponseRow.getTypeScriptAlgebraicType());
   },
 
 }
 
-export default EventRow;
+export default ResponseRow;
 
 

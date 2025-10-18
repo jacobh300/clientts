@@ -34,38 +34,40 @@ import { ClientConnected } from "./client_connected_reducer.ts";
 export { ClientConnected };
 import { ClientDisconnected } from "./client_disconnected_reducer.ts";
 export { ClientDisconnected };
-import { SendCommand } from "./send_command_reducer.ts";
-export { SendCommand };
+import { ReducerGetUserCommand } from "./reducer_get_user_command_reducer.ts";
+export { ReducerGetUserCommand };
+import { ReducerHelpCommand } from "./reducer_help_command_reducer.ts";
+export { ReducerHelpCommand };
 import { SendMessage } from "./send_message_reducer.ts";
 export { SendMessage };
 import { SetName } from "./set_name_reducer.ts";
 export { SetName };
 
 // Import and reexport all table handle types
-import { EventsTableHandle } from "./events_table.ts";
-export { EventsTableHandle };
 import { MessageTableHandle } from "./message_table.ts";
 export { MessageTableHandle };
+import { ResponseTableHandle } from "./response_table.ts";
+export { ResponseTableHandle };
 import { UserTableHandle } from "./user_table.ts";
 export { UserTableHandle };
 
 // Import and reexport all types
-import { EventRow } from "./event_row_type.ts";
-export { EventRow };
 import { MessageRow } from "./message_row_type.ts";
 export { MessageRow };
+import { ResponseRow } from "./response_row_type.ts";
+export { ResponseRow };
 import { UserRow } from "./user_row_type.ts";
 export { UserRow };
 
 const REMOTE_MODULE = {
   tables: {
-    events: {
-      tableName: "events",
-      rowType: EventRow.getTypeScriptAlgebraicType(),
-    },
     message: {
       tableName: "message",
       rowType: MessageRow.getTypeScriptAlgebraicType(),
+    },
+    response: {
+      tableName: "response",
+      rowType: ResponseRow.getTypeScriptAlgebraicType(),
     },
     user: {
       tableName: "user",
@@ -86,9 +88,13 @@ const REMOTE_MODULE = {
       reducerName: "ClientDisconnected",
       argsType: ClientDisconnected.getTypeScriptAlgebraicType(),
     },
-    SendCommand: {
-      reducerName: "SendCommand",
-      argsType: SendCommand.getTypeScriptAlgebraicType(),
+    reducer_getUserCommand: {
+      reducerName: "reducer_getUserCommand",
+      argsType: ReducerGetUserCommand.getTypeScriptAlgebraicType(),
+    },
+    reducer_helpCommand: {
+      reducerName: "reducer_helpCommand",
+      argsType: ReducerHelpCommand.getTypeScriptAlgebraicType(),
     },
     SendMessage: {
       reducerName: "SendMessage",
@@ -130,7 +136,8 @@ const REMOTE_MODULE = {
 export type Reducer = never
 | { name: "ClientConnected", args: ClientConnected }
 | { name: "ClientDisconnected", args: ClientDisconnected }
-| { name: "SendCommand", args: SendCommand }
+| { name: "ReducerGetUserCommand", args: ReducerGetUserCommand }
+| { name: "ReducerHelpCommand", args: ReducerHelpCommand }
 | { name: "SendMessage", args: SendMessage }
 | { name: "SetName", args: SetName }
 ;
@@ -154,20 +161,32 @@ export class RemoteReducers {
     this.connection.offReducer("ClientDisconnected", callback);
   }
 
-  sendCommand(command: string, args: string[]) {
-    const __args = { command, args };
+  reducerGetUserCommand(username: string) {
+    const __args = { username };
     let __writer = new __BinaryWriter(1024);
-    SendCommand.serialize(__writer, __args);
+    ReducerGetUserCommand.serialize(__writer, __args);
     let __argsBuffer = __writer.getBuffer();
-    this.connection.callReducer("SendCommand", __argsBuffer, this.setCallReducerFlags.sendCommandFlags);
+    this.connection.callReducer("reducer_getUserCommand", __argsBuffer, this.setCallReducerFlags.reducerGetUserCommandFlags);
   }
 
-  onSendCommand(callback: (ctx: ReducerEventContext, command: string, args: string[]) => void) {
-    this.connection.onReducer("SendCommand", callback);
+  onReducerGetUserCommand(callback: (ctx: ReducerEventContext, username: string) => void) {
+    this.connection.onReducer("reducer_getUserCommand", callback);
   }
 
-  removeOnSendCommand(callback: (ctx: ReducerEventContext, command: string, args: string[]) => void) {
-    this.connection.offReducer("SendCommand", callback);
+  removeOnReducerGetUserCommand(callback: (ctx: ReducerEventContext, username: string) => void) {
+    this.connection.offReducer("reducer_getUserCommand", callback);
+  }
+
+  reducerHelpCommand() {
+    this.connection.callReducer("reducer_helpCommand", new Uint8Array(0), this.setCallReducerFlags.reducerHelpCommandFlags);
+  }
+
+  onReducerHelpCommand(callback: (ctx: ReducerEventContext) => void) {
+    this.connection.onReducer("reducer_helpCommand", callback);
+  }
+
+  removeOnReducerHelpCommand(callback: (ctx: ReducerEventContext) => void) {
+    this.connection.offReducer("reducer_helpCommand", callback);
   }
 
   sendMessage(text: string) {
@@ -205,9 +224,14 @@ export class RemoteReducers {
 }
 
 export class SetReducerFlags {
-  sendCommandFlags: __CallReducerFlags = 'FullUpdate';
-  sendCommand(flags: __CallReducerFlags) {
-    this.sendCommandFlags = flags;
+  reducerGetUserCommandFlags: __CallReducerFlags = 'FullUpdate';
+  reducerGetUserCommand(flags: __CallReducerFlags) {
+    this.reducerGetUserCommandFlags = flags;
+  }
+
+  reducerHelpCommandFlags: __CallReducerFlags = 'FullUpdate';
+  reducerHelpCommand(flags: __CallReducerFlags) {
+    this.reducerHelpCommandFlags = flags;
   }
 
   sendMessageFlags: __CallReducerFlags = 'FullUpdate';
@@ -225,14 +249,14 @@ export class SetReducerFlags {
 export class RemoteTables {
   constructor(private connection: __DbConnectionImpl) {}
 
-  get events(): EventsTableHandle {
-    // clientCache is a private property
-    return new EventsTableHandle((this.connection as unknown as { clientCache: __ClientCache }).clientCache.getOrCreateTable<EventRow>(REMOTE_MODULE.tables.events));
-  }
-
   get message(): MessageTableHandle {
     // clientCache is a private property
     return new MessageTableHandle((this.connection as unknown as { clientCache: __ClientCache }).clientCache.getOrCreateTable<MessageRow>(REMOTE_MODULE.tables.message));
+  }
+
+  get response(): ResponseTableHandle {
+    // clientCache is a private property
+    return new ResponseTableHandle((this.connection as unknown as { clientCache: __ClientCache }).clientCache.getOrCreateTable<ResponseRow>(REMOTE_MODULE.tables.response));
   }
 
   get user(): UserTableHandle {

@@ -1,4 +1,4 @@
-import { UserRow } from "../module_bindings/user_row_type";
+import { UserRow } from "../../module_bindings/user_row_type";
 
 type UserInfo = { user: UserRow | null; };
 
@@ -7,7 +7,7 @@ export function UserList({ users }: { users: UserInfo[] }) {
     <div className="users">
       <h1>Users</h1>
       {users.length < 1 && <p>No users</p>}
-      <div>
+      <div className = "user-list">
         {users.map((user, key) => {
             let nameVar = "Unknown";
             

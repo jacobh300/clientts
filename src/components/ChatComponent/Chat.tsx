@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import {useMessages, useUsers} from "../lib/hooks";
-import { Database } from "../lib/database";
-import { MessageRow } from "../module_bindings";
+import {useMessages, useUsers} from "../../lib/hooks";
+import { Database } from "../../lib/database";
+import { MessageRow } from "../../module_bindings";
 
 export type PrettyMessage = { senderName: string; text: string };
 
@@ -35,8 +35,9 @@ export function Chat() {
       <div>
         {prettyMessages.map((message, key) => (
           <div key={key}>
-            <p><b>{message.senderName}</b></p>
-            <p>{message.text}</p>
+            <span className="chat-message__sender"><b>{message.senderName}</b></span>
+            <span className="chat-message__divider"> {">"} </span>
+            <span className="chat-message__text">{message.text}</span>
           </div>
         ))}
       </div>
