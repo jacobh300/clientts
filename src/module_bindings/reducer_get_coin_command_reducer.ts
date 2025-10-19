@@ -28,44 +28,34 @@ import {
   type TableHandle as __TableHandle,
 } from "spacetimedb";
 
-export type ResponseRow = {
-  id: number,
-  identity: __Identity,
-  sent: __Timestamp,
-  data: string,
-};
-let _cached_ResponseRow_type_value: __AlgebraicTypeType | null = null;
+export type ReducerGetCoinCommand = {};
+let _cached_ReducerGetCoinCommand_type_value: __AlgebraicTypeType | null = null;
 
 /**
  * An object for generated helper functions.
  */
-export const ResponseRow = {
+export const ReducerGetCoinCommand = {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
   */
   getTypeScriptAlgebraicType(): __AlgebraicTypeType {
-    if (_cached_ResponseRow_type_value) return _cached_ResponseRow_type_value;
-    _cached_ResponseRow_type_value = __AlgebraicTypeValue.Product({ elements: [] });
-    _cached_ResponseRow_type_value.value.elements.push(
-      { name: "id", algebraicType: __AlgebraicTypeValue.I32 },
-      { name: "identity", algebraicType: __AlgebraicTypeValue.createIdentityType() },
-      { name: "sent", algebraicType: __AlgebraicTypeValue.createTimestampType() },
-      { name: "data", algebraicType: __AlgebraicTypeValue.String },
+    if (_cached_ReducerGetCoinCommand_type_value) return _cached_ReducerGetCoinCommand_type_value;
+    _cached_ReducerGetCoinCommand_type_value = __AlgebraicTypeValue.Product({ elements: [] });
+    _cached_ReducerGetCoinCommand_type_value.value.elements.push(
     );
-    return _cached_ResponseRow_type_value;
+    return _cached_ReducerGetCoinCommand_type_value;
   },
 
-  serialize(writer: __BinaryWriter, value: ResponseRow): void {
-    __AlgebraicTypeValue.serializeValue(writer, ResponseRow.getTypeScriptAlgebraicType(), value);
+  serialize(writer: __BinaryWriter, value: ReducerGetCoinCommand): void {
+    __AlgebraicTypeValue.serializeValue(writer, ReducerGetCoinCommand.getTypeScriptAlgebraicType(), value);
   },
 
-  deserialize(reader: __BinaryReader): ResponseRow {
-    return __AlgebraicTypeValue.deserializeValue(reader, ResponseRow.getTypeScriptAlgebraicType());
+  deserialize(reader: __BinaryReader): ReducerGetCoinCommand {
+    return __AlgebraicTypeValue.deserializeValue(reader, ReducerGetCoinCommand.getTypeScriptAlgebraicType());
   },
 
 }
 
-export default ResponseRow;
-
+export default ReducerGetCoinCommand;
 

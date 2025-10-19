@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DbConnection, type EventContext, MessageRow, UserRow, ResponseRow } from "../module_bindings";
+import { DbConnection, type EventContext, MessageRow, UserRow, ResponseRow, ItemRow } from "../module_bindings";
 
 export function useMessages(conn: DbConnection | null): MessageRow[] {
   const [messages, setMessages] = useState<MessageRow[]>([]);
@@ -83,6 +83,69 @@ export function useUsers(conn: DbConnection | null): Map<string, UserRow> {
   }, [conn]);
 
   return users;
+}
+
+export function useItems(conn: DbConnection | null): Map<string, ItemRow> 
+{
+  const [items, setItems] = useState<Map<string, ItemRow>>(new Map());
+
+  useEffect(() => {
+    if (!conn) { setItems(new Map()); return; }
+    const table = conn.db.item;
+    if (!table) { setItems(new Map()); return; }
+
+    // snapshot
+    if (table.iter) {
+      const snap = new Map<string, ItemRow>();
+      for (const row of table.iter() as Iterable<ItemRow>) {
+        snap.set(row.owner.toHexString(), row);
+      }
+      setItems(snap);
+    }
+
+    const onInsert = (_: EventContext, row: ItemRow) => {
+      const key = row.owner.toHexString();
+      setItems(prev => {
+        const next = new Map(prev);
+        next.set(key, row);
+        return next;
+      });
+
+    };
+
+    const onUpdate = (_: EventContext, oldRow: ItemRow, newRow: ItemRow) => {
+      const oldKey = oldRow.owner.toHexString();
+      const newKey = newRow.owner.toHexString();
+      setItems(prev => {
+        const next = new Map(prev);
+        if (oldKey !== newKey) next.delete(oldKey);
+        next.set(newKey, newRow); // amount changes will just replace
+        return next;
+      });
+    };
+
+    const onDelete = (_: EventContext, row: ItemRow) => {
+      const key = row.owner.toHexString();
+      setItems(prev => {
+        const next = new Map(prev);
+        next.delete(key);
+        return next;
+      });
+    };
+
+    table.onInsert(onInsert);
+    table.onUpdate?.(onUpdate);
+    table.onDelete?.(onDelete);
+    return () => {
+      table.removeOnInsert(onInsert);
+      table.removeOnUpdate?.(onUpdate);
+      table.removeOnDelete?.(onDelete);
+    };
+  }, [conn]);
+
+
+
+  return items;
 }
 
 

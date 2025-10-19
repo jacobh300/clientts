@@ -1,13 +1,12 @@
 @import "../components/ChatComponent/Chat.css";
 @import "../components/ProfileComponent/profile.css";
-@import "../components/PagesComponent/Pages.css";
+@import "../components/QuickActions/QuickActionBar.css";
 @import "../components/UserListComponent/UserList.css";
 @import "../components/MessageInputForm/NewMessageForm.css";
+@import "../components/ItemViewerComponent/ItemViewerBar.css";
 
 .App {
   height: 100vh; /* fill viewport height */
   width: clamp(100vw, 100%, 1200px);
   margin: 0 auto;
-  overflow: hidden;
-  height: 100%;
 }

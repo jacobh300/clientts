@@ -27,26 +27,26 @@ import {
   type SubscriptionEventContextInterface as __SubscriptionEventContextInterface,
   type TableHandle as __TableHandle,
 } from "spacetimedb";
-import { ResponseRow } from "./response_row_type";
+import { ItemRow } from "./item_row_type";
 import { type EventContext, type Reducer, RemoteReducers, RemoteTables } from ".";
 declare type __keep = [EventContext, Reducer, RemoteReducers, RemoteTables];
 
 /**
- * Table handle for the table `response`.
+ * Table handle for the table `item`.
  *
- * Obtain a handle from the [`response`] property on [`RemoteTables`],
- * like `ctx.db.response`.
+ * Obtain a handle from the [`item`] property on [`RemoteTables`],
+ * like `ctx.db.item`.
  *
  * Users are encouraged not to explicitly reference this type,
  * but to directly chain method calls,
- * like `ctx.db.response.on_insert(...)`.
+ * like `ctx.db.item.on_insert(...)`.
  */
-export class ResponseTableHandle<TableName extends string> implements __TableHandle<TableName> {
+export class ItemTableHandle<TableName extends string> implements __TableHandle<TableName> {
   // phantom type to track the table name
   readonly tableName!: TableName;
-  tableCache: __TableCache<ResponseRow>;
+  tableCache: __TableCache<ItemRow>;
 
-  constructor(tableCache: __TableCache<ResponseRow>) {
+  constructor(tableCache: __TableCache<ItemRow>) {
     this.tableCache = tableCache;
   }
 
@@ -54,23 +54,53 @@ export class ResponseTableHandle<TableName extends string> implements __TableHan
     return this.tableCache.count();
   }
 
-  iter(): Iterable<ResponseRow> {
+  iter(): Iterable<ItemRow> {
     return this.tableCache.iter();
   }
+  /**
+   * Access to the `id` unique index on the table `item`,
+   * which allows point queries on the field of the same name
+   * via the [`ItemIdUnique.find`] method.
+   *
+   * Users are encouraged not to explicitly reference this type,
+   * but to directly chain method calls,
+   * like `ctx.db.item.id().find(...)`.
+   *
+   * Get a handle on the `id` unique index on the table `item`.
+   */
+  id = {
+    // Find the subscribed row whose `id` column value is equal to `col_val`,
+    // if such a row is present in the client cache.
+    find: (col_val: number): ItemRow | undefined => {
+      for (let row of this.tableCache.iter()) {
+        if (__deepEqual(row.id, col_val)) {
+          return row;
+        }
+      }
+    },
+  };
 
-  onInsert = (cb: (ctx: EventContext, row: ResponseRow) => void) => {
+  onInsert = (cb: (ctx: EventContext, row: ItemRow) => void) => {
     return this.tableCache.onInsert(cb);
   }
 
-  removeOnInsert = (cb: (ctx: EventContext, row: ResponseRow) => void) => {
+  removeOnInsert = (cb: (ctx: EventContext, row: ItemRow) => void) => {
     return this.tableCache.removeOnInsert(cb);
   }
 
-  onDelete = (cb: (ctx: EventContext, row: ResponseRow) => void) => {
+  onDelete = (cb: (ctx: EventContext, row: ItemRow) => void) => {
     return this.tableCache.onDelete(cb);
   }
 
-  removeOnDelete = (cb: (ctx: EventContext, row: ResponseRow) => void) => {
+  removeOnDelete = (cb: (ctx: EventContext, row: ItemRow) => void) => {
     return this.tableCache.removeOnDelete(cb);
   }
-}
+
+  // Updates are only defined for tables with primary keys.
+  onUpdate = (cb: (ctx: EventContext, oldRow: ItemRow, newRow: ItemRow) => void) => {
+    return this.tableCache.onUpdate(cb);
+  }
+
+  removeOnUpdate = (cb: (ctx: EventContext, onRow: ItemRow, newRow: ItemRow) => void) => {
+    return this.tableCache.removeOnUpdate(cb);
+  }}

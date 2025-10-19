@@ -1,4 +1,4 @@
-.Pages {
+.QuickActionBar {
   grid-column: 1 / 3;
 
   display: flex;
@@ -8,7 +8,7 @@
   background-color: var(--textbox-color);
 }
 
-.Pages .page_buttons
+.QuickActionBar .page_buttons
 {
   display: flex;
   background:#424242;

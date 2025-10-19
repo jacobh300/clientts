@@ -78,7 +78,12 @@ export class Database
         conn.subscriptionBuilder()
             .onApplied(this.onSubscriptionApplied)
             .onError(this.onSubscriptionError)
-            .subscribe(["SELECT * FROM message", "SELECT * FROM user", "SELECT * FROM response"]);
+            .subscribe([
+                "SELECT * FROM message", 
+                "SELECT * FROM user", 
+                "SELECT * FROM response", 
+                "SELECT * FROM item"
+            ]);
 
         if (this._resolveReady) {
             this._resolveReady(Database.Instance);

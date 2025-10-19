@@ -1,0 +1,24 @@
+.ItemViewerBar {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 1rem;
+  border-bottom: 1px solid var(--theme-color);
+  background-color: var(--textbox-color);
+}
+
+.itemViewerBar_Item {
+  /* overrides specific to this placement */
+    background: #e8eefc;
+    border: 2px solid #333333;
+    border-radius: 8px;
+}
+
+.item-display__label {
+    color: #333333;
+    text-align: center;
+}
+
+.item-display__amount {
+    color: #555555;
+    text-align: center;
+}
