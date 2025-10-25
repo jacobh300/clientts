@@ -9,46 +9,76 @@ export type ItemDict = { [key: string]: ItemRow | null };
 
 export function ItemViewerBar({ conn }: { conn: DbConnection })
 {
+    const showAllUserItems = true; //Set to true to show all user items, false to only show current identity items 
     const items = useItems(conn);
     console.log("ItemViewerBar items:", items);
 
     //Get list of the items that belong to the current identity
-    let myItems: Map<string, ItemRow> = new Map();
+    let myItems: Map<number, ItemRow> = new Map();
     items.forEach((itemRow) => {
-        if(itemRow.owner.toHexString() == conn.identity?.toHexString())
+      if(showAllUserItems)
+      {
+        myItems.set(itemRow.id, itemRow);
+      }
+      else
+      {
+        if(conn.identity?.toHexString() === itemRow.owner.toHexString())
         {
-            myItems.set(itemRow.name, itemRow);
+          myItems.set(itemRow.id, itemRow);
         }
+      }
     });
-
+    
+    const ItemList = React.memo(({ myItems }: { myItems: Map<number, ItemRow> }) => (
+    <>
+      {Array.from(myItems.values()).map((itemRow) => (
+        <ItemDisplay
+          key={itemRow.id}
+          className="itemViewerBar_Item"
+          size={80}
+          itemName={itemRow.name}
+          itemAmount={itemRow.quantity.toString()}
+          ownerName=
+          {
+            //Use the itemRow.owner identity to go to database and get the user name
+            conn.db.user?.identity.find(itemRow.owner)?.name || itemRow.owner.toHexString().substring(0, 8)
+          }
+        />
+      ))}
+    </>
+    ));
 
     console.log("ItemViewerBar listOfMyItems:", myItems);
     return(
         <div className="ItemViewerBar">
-            <ItemDisplay
-                className="itemViewerBar_Item"
-                size={50}
-                itemName="coin"
-                itemAmount={myItems.get("coin") ? myItems.get("coin")!.quantity.toString() : "0"}
-            />
+            <ItemList myItems={myItems} />  
         </div>
     );
 }
 
+            //{
+            //    Array.from(myItems.values()).map((itemRow, index) => (
+            //        
+            //        <ItemDisplay
+            //            key={index}
+            //            className="itemViewerBar_Item"
+            //            size={80}
+            //            itemName={itemRow.name}
+            //            itemAmount={myItems.get(itemRow.id) ? myItems.get(itemRow.id)!.quantity.toString() : "0"}
+            //        />
+            //    ))
+            //}
 
 
-
-//Create a 200px x 200px box with a border and a background color of light gray
-//Inside the box, place a button labeled "Item"
-//Should not be a button just a div with styling
 type Props = React.HTMLAttributes<HTMLDivElement> & {
   size?: number | string;           // e.g., 200 or "12rem"
   itemName?: React.ReactNode;          // optional inner label
    itemAmount?: React.ReactNode;         // optional inner amount
+  ownerName?: React.ReactNode;         // optional inner owner name
 };
 
 export const ItemDisplay = forwardRef<HTMLDivElement, Props>(function ItemDisplay(
-  { className, style, size = 200, itemName = "Item", itemAmount = "0", children, ...rest },
+  { className, style, size = 200, itemName = "Item", itemAmount = "0", ownerName = "", children, ...rest },
   ref
 ) {
   const convertedSize = typeof size === "number" ? `${size}px` : size;
@@ -63,6 +93,7 @@ export const ItemDisplay = forwardRef<HTMLDivElement, Props>(function ItemDispla
         (<>
             <div className="item-display__label">{itemName}</div>
             <div className="item-display__amount">{itemAmount}</div>
+            <div className="item-display__ownerName">{ownerName}</div>
         </>)}
     </div>
   );

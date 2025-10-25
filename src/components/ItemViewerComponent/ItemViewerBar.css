@@ -1,9 +1,17 @@
 .ItemViewerBar {
   display: flex;
-  gap: 1rem;
+  flex-flow: row nowrap;
+  gap: 0rem;
   padding: 1rem 1rem;
   border-bottom: 1px solid var(--theme-color);
   background-color: var(--textbox-color);
+
+  max-width: 1000px;
+  overflow-x: auto;        /* horizontal scroll */
+  overflow-y: hidden;
+  min-width: 1000px;            /* important if inside CSS Grid */
+  overscroll-behavior-x: contain;
+  scrollbar-gutter: stable both-edges; /* optional */
 }
 
 .itemViewerBar_Item {
@@ -11,6 +19,7 @@
     background: #e8eefc;
     border: 2px solid #333333;
     border-radius: 8px;
+    box-sizing: border-box;
 }
 
 .item-display__label {
@@ -21,4 +30,11 @@
 .item-display__amount {
     color: #555555;
     text-align: center;
+}
+
+.item-display__ownerName {
+    color: #777777;
+    text-align: center;
+    font-style: italic;
+    
 }

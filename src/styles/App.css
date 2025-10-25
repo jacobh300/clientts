@@ -6,7 +6,8 @@
 @import "../components/ItemViewerComponent/ItemViewerBar.css";
 
 .App {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   height: 100vh; /* fill viewport height */
-  width: clamp(100vw, 100%, 1200px);
+  width: 100%;
   margin: 0 auto;
 }

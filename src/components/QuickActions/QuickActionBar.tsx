@@ -12,15 +12,23 @@ export function QuickActionBar({ conn }: { conn: DbConnection })
         navigate('/chat', { replace: true });
     }
 
-    const onClickGetCoin = () =>
+    const onClickGetCoin = (e: React.MouseEvent<HTMLButtonElement>) =>
     {
         conn.reducers.reducerGetCoinCommand();
     }
+   
+    const onClickGetCopper = (e: React.MouseEvent<HTMLButtonElement>) =>
+    {
+        conn.reducers.reducerGetCopperCommand();
+    }
+
 
     return (
     
         <div className="QuickActionBar">
-            <button className="quickAction_button" onClick={onClickGetCoin}>Get Coin</button> 
+            <button type="button" className="quickAction_button" onClick={(e) => onClickGetCoin(e)}>Get Coin</button> 
+            <button type="button" className="quickAction_button" onClick={(e) => onClickGetCopper(e)}>Get Copper</button> 
+
         </div>
     );
 

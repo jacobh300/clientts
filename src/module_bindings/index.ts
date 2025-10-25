@@ -37,6 +37,8 @@ import { ClientDisconnected } from "./client_disconnected_reducer.ts";
 export { ClientDisconnected };
 import { ReducerGetCoinCommand } from "./reducer_get_coin_command_reducer.ts";
 export { ReducerGetCoinCommand };
+import { ReducerGetCopperCommand } from "./reducer_get_copper_command_reducer.ts";
+export { ReducerGetCopperCommand };
 import { ReducerGetUserCommand } from "./reducer_get_user_command_reducer.ts";
 export { ReducerGetUserCommand };
 import { ReducerHelpCommand } from "./reducer_help_command_reducer.ts";
@@ -108,6 +110,10 @@ const REMOTE_MODULE = {
       reducerName: "reducer_getCoinCommand",
       argsType: ReducerGetCoinCommand.getTypeScriptAlgebraicType(),
     },
+    reducer_getCopperCommand: {
+      reducerName: "reducer_getCopperCommand",
+      argsType: ReducerGetCopperCommand.getTypeScriptAlgebraicType(),
+    },
     reducer_getUserCommand: {
       reducerName: "reducer_getUserCommand",
       argsType: ReducerGetUserCommand.getTypeScriptAlgebraicType(),
@@ -157,6 +163,7 @@ export type Reducer = never
 | { name: "ClientConnected", args: ClientConnected }
 | { name: "ClientDisconnected", args: ClientDisconnected }
 | { name: "ReducerGetCoinCommand", args: ReducerGetCoinCommand }
+| { name: "ReducerGetCopperCommand", args: ReducerGetCopperCommand }
 | { name: "ReducerGetUserCommand", args: ReducerGetUserCommand }
 | { name: "ReducerHelpCommand", args: ReducerHelpCommand }
 | { name: "SendMessage", args: SendMessage }
@@ -192,6 +199,18 @@ export class RemoteReducers {
 
   removeOnReducerGetCoinCommand(callback: (ctx: ReducerEventContext) => void) {
     this.connection.offReducer("reducer_getCoinCommand", callback);
+  }
+
+  reducerGetCopperCommand() {
+    this.connection.callReducer("reducer_getCopperCommand", new Uint8Array(0), this.setCallReducerFlags.reducerGetCopperCommandFlags);
+  }
+
+  onReducerGetCopperCommand(callback: (ctx: ReducerEventContext) => void) {
+    this.connection.onReducer("reducer_getCopperCommand", callback);
+  }
+
+  removeOnReducerGetCopperCommand(callback: (ctx: ReducerEventContext) => void) {
+    this.connection.offReducer("reducer_getCopperCommand", callback);
   }
 
   reducerGetUserCommand(username: string) {
@@ -260,6 +279,11 @@ export class SetReducerFlags {
   reducerGetCoinCommandFlags: __CallReducerFlags = 'FullUpdate';
   reducerGetCoinCommand(flags: __CallReducerFlags) {
     this.reducerGetCoinCommandFlags = flags;
+  }
+
+  reducerGetCopperCommandFlags: __CallReducerFlags = 'FullUpdate';
+  reducerGetCopperCommand(flags: __CallReducerFlags) {
+    this.reducerGetCopperCommandFlags = flags;
   }
 
   reducerGetUserCommandFlags: __CallReducerFlags = 'FullUpdate';

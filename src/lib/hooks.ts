@@ -96,40 +96,34 @@ export function useItems(conn: DbConnection | null): Map<string, ItemRow>
 
     // snapshot
     if (table.iter) {
-      const snap = new Map<string, ItemRow>();
+      const firstMap = new Map<string, ItemRow>();
       for (const row of table.iter() as Iterable<ItemRow>) {
-        snap.set(row.owner.toHexString(), row);
+        firstMap.set(row.id.toString(), row);
       }
-      setItems(snap);
+      setItems(firstMap);
     }
 
     const onInsert = (_: EventContext, row: ItemRow) => {
-      const key = row.owner.toHexString();
       setItems(prev => {
-        const next = new Map(prev);
-        next.set(key, row);
-        return next;
+        const updatedMap = new Map(prev);
+        updatedMap.set(row.id.toString(), row);
+        return updatedMap;
       });
-
     };
 
     const onUpdate = (_: EventContext, oldRow: ItemRow, newRow: ItemRow) => {
-      const oldKey = oldRow.owner.toHexString();
-      const newKey = newRow.owner.toHexString();
       setItems(prev => {
-        const next = new Map(prev);
-        if (oldKey !== newKey) next.delete(oldKey);
-        next.set(newKey, newRow); // amount changes will just replace
-        return next;
+        const updatedMap = new Map(prev);
+        updatedMap.set(newRow.id.toString(), newRow);
+        return updatedMap;
       });
     };
 
     const onDelete = (_: EventContext, row: ItemRow) => {
-      const key = row.owner.toHexString();
       setItems(prev => {
-        const next = new Map(prev);
-        next.delete(key);
-        return next;
+        const updatedMap = new Map(prev);
+        updatedMap.delete(row.id.toString());
+        return updatedMap;
       });
     };
 

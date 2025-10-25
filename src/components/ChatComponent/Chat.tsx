@@ -24,7 +24,7 @@ export function Chat() {
     }));
 
   useEffect(() => {
-    endOfChatRef.current?.scrollIntoView({ behavior: "smooth" });
+    //endOfChatRef.current?.scrollIntoView({ behavior: "smooth" }); //TODO: Fix scrolling to entire page and not only chat
   }, [prettyMessages]);
 
 

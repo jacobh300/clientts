@@ -34,7 +34,7 @@ export class Database
 
         DbConnection.builder()
         //.withUri("wss://ttschat.ddns.net") //Swap when deploying
-        .withUri("ws://localhost:3000")
+        .withUri("ws://192.168.0.128:3000")
         .withModuleName("sandbox")
         .withToken(auth)
         .onConnect(this.onConnected)
