@@ -28,44 +28,34 @@ import {
   type TableHandle as __TableHandle,
 } from "spacetimedb";
 
-export type ItemRow = {
-  id: number,
-  owner: __Identity,
-  itemTypeId: number,
-  quantity: number,
-};
-let _cached_ItemRow_type_value: __AlgebraicTypeType | null = null;
+export type ReducerCheckAdmin = {};
+let _cached_ReducerCheckAdmin_type_value: __AlgebraicTypeType | null = null;
 
 /**
  * An object for generated helper functions.
  */
-export const ItemRow = {
+export const ReducerCheckAdmin = {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
   */
   getTypeScriptAlgebraicType(): __AlgebraicTypeType {
-    if (_cached_ItemRow_type_value) return _cached_ItemRow_type_value;
-    _cached_ItemRow_type_value = __AlgebraicTypeValue.Product({ elements: [] });
-    _cached_ItemRow_type_value.value.elements.push(
-      { name: "id", algebraicType: __AlgebraicTypeValue.I32 },
-      { name: "owner", algebraicType: __AlgebraicTypeValue.createIdentityType() },
-      { name: "itemTypeId", algebraicType: __AlgebraicTypeValue.I32 },
-      { name: "quantity", algebraicType: __AlgebraicTypeValue.I32 },
+    if (_cached_ReducerCheckAdmin_type_value) return _cached_ReducerCheckAdmin_type_value;
+    _cached_ReducerCheckAdmin_type_value = __AlgebraicTypeValue.Product({ elements: [] });
+    _cached_ReducerCheckAdmin_type_value.value.elements.push(
     );
-    return _cached_ItemRow_type_value;
+    return _cached_ReducerCheckAdmin_type_value;
   },
 
-  serialize(writer: __BinaryWriter, value: ItemRow): void {
-    __AlgebraicTypeValue.serializeValue(writer, ItemRow.getTypeScriptAlgebraicType(), value);
+  serialize(writer: __BinaryWriter, value: ReducerCheckAdmin): void {
+    __AlgebraicTypeValue.serializeValue(writer, ReducerCheckAdmin.getTypeScriptAlgebraicType(), value);
   },
 
-  deserialize(reader: __BinaryReader): ItemRow {
-    return __AlgebraicTypeValue.deserializeValue(reader, ItemRow.getTypeScriptAlgebraicType());
+  deserialize(reader: __BinaryReader): ReducerCheckAdmin {
+    return __AlgebraicTypeValue.deserializeValue(reader, ReducerCheckAdmin.getTypeScriptAlgebraicType());
   },
 
 }
 
-export default ItemRow;
-
+export default ReducerCheckAdmin;
 

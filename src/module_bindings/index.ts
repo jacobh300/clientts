@@ -35,6 +35,10 @@ import { ClientConnected } from "./client_connected_reducer.ts";
 export { ClientConnected };
 import { ClientDisconnected } from "./client_disconnected_reducer.ts";
 export { ClientDisconnected };
+import { ReducerAddItemType } from "./reducer_add_item_type_reducer.ts";
+export { ReducerAddItemType };
+import { ReducerCheckAdmin } from "./reducer_check_admin_reducer.ts";
+export { ReducerCheckAdmin };
 import { ReducerGetCoinCommand } from "./reducer_get_coin_command_reducer.ts";
 export { ReducerGetCoinCommand };
 import { ReducerGetCopperCommand } from "./reducer_get_copper_command_reducer.ts";
@@ -49,8 +53,12 @@ import { SetName } from "./set_name_reducer.ts";
 export { SetName };
 
 // Import and reexport all table handle types
+import { AdminTableHandle } from "./admin_table.ts";
+export { AdminTableHandle };
 import { ItemTableHandle } from "./item_table.ts";
 export { ItemTableHandle };
+import { ItemTypesTableHandle } from "./item_types_table.ts";
+export { ItemTypesTableHandle };
 import { MessageTableHandle } from "./message_table.ts";
 export { MessageTableHandle };
 import { ResponseTableHandle } from "./response_table.ts";
@@ -59,8 +67,12 @@ import { UserTableHandle } from "./user_table.ts";
 export { UserTableHandle };
 
 // Import and reexport all types
+import { AdminRow } from "./admin_row_type.ts";
+export { AdminRow };
 import { ItemRow } from "./item_row_type.ts";
 export { ItemRow };
+import { ItemType } from "./item_type_type.ts";
+export { ItemType };
 import { MessageRow } from "./message_row_type.ts";
 export { MessageRow };
 import { ResponseRow } from "./response_row_type.ts";
@@ -70,6 +82,15 @@ export { UserRow };
 
 const REMOTE_MODULE = {
   tables: {
+    admin: {
+      tableName: "admin" as const,
+      rowType: AdminRow.getTypeScriptAlgebraicType(),
+      primaryKey: "identity",
+      primaryKeyInfo: {
+        colName: "identity",
+        colType: (AdminRow.getTypeScriptAlgebraicType() as __AlgebraicTypeVariants.Product).value.elements[0].algebraicType,
+      },
+    },
     item: {
       tableName: "item" as const,
       rowType: ItemRow.getTypeScriptAlgebraicType(),
@@ -77,6 +98,15 @@ const REMOTE_MODULE = {
       primaryKeyInfo: {
         colName: "id",
         colType: (ItemRow.getTypeScriptAlgebraicType() as __AlgebraicTypeVariants.Product).value.elements[0].algebraicType,
+      },
+    },
+    item_types: {
+      tableName: "item_types" as const,
+      rowType: ItemType.getTypeScriptAlgebraicType(),
+      primaryKey: "id",
+      primaryKeyInfo: {
+        colName: "id",
+        colType: (ItemType.getTypeScriptAlgebraicType() as __AlgebraicTypeVariants.Product).value.elements[0].algebraicType,
       },
     },
     message: {
@@ -105,6 +135,14 @@ const REMOTE_MODULE = {
     ClientDisconnected: {
       reducerName: "ClientDisconnected",
       argsType: ClientDisconnected.getTypeScriptAlgebraicType(),
+    },
+    reducer_addItemType: {
+      reducerName: "reducer_addItemType",
+      argsType: ReducerAddItemType.getTypeScriptAlgebraicType(),
+    },
+    reducer_checkAdmin: {
+      reducerName: "reducer_checkAdmin",
+      argsType: ReducerCheckAdmin.getTypeScriptAlgebraicType(),
     },
     reducer_getCoinCommand: {
       reducerName: "reducer_getCoinCommand",
@@ -162,6 +200,8 @@ const REMOTE_MODULE = {
 export type Reducer = never
 | { name: "ClientConnected", args: ClientConnected }
 | { name: "ClientDisconnected", args: ClientDisconnected }
+| { name: "ReducerAddItemType", args: ReducerAddItemType }
+| { name: "ReducerCheckAdmin", args: ReducerCheckAdmin }
 | { name: "ReducerGetCoinCommand", args: ReducerGetCoinCommand }
 | { name: "ReducerGetCopperCommand", args: ReducerGetCopperCommand }
 | { name: "ReducerGetUserCommand", args: ReducerGetUserCommand }
@@ -187,6 +227,34 @@ export class RemoteReducers {
 
   removeOnClientDisconnected(callback: (ctx: ReducerEventContext) => void) {
     this.connection.offReducer("ClientDisconnected", callback);
+  }
+
+  reducerAddItemType(id: number, name: string) {
+    const __args = { id, name };
+    let __writer = new __BinaryWriter(1024);
+    ReducerAddItemType.serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("reducer_addItemType", __argsBuffer, this.setCallReducerFlags.reducerAddItemTypeFlags);
+  }
+
+  onReducerAddItemType(callback: (ctx: ReducerEventContext, id: number, name: string) => void) {
+    this.connection.onReducer("reducer_addItemType", callback);
+  }
+
+  removeOnReducerAddItemType(callback: (ctx: ReducerEventContext, id: number, name: string) => void) {
+    this.connection.offReducer("reducer_addItemType", callback);
+  }
+
+  reducerCheckAdmin() {
+    this.connection.callReducer("reducer_checkAdmin", new Uint8Array(0), this.setCallReducerFlags.reducerCheckAdminFlags);
+  }
+
+  onReducerCheckAdmin(callback: (ctx: ReducerEventContext) => void) {
+    this.connection.onReducer("reducer_checkAdmin", callback);
+  }
+
+  removeOnReducerCheckAdmin(callback: (ctx: ReducerEventContext) => void) {
+    this.connection.offReducer("reducer_checkAdmin", callback);
   }
 
   reducerGetCoinCommand() {
@@ -276,6 +344,16 @@ export class RemoteReducers {
 }
 
 export class SetReducerFlags {
+  reducerAddItemTypeFlags: __CallReducerFlags = 'FullUpdate';
+  reducerAddItemType(flags: __CallReducerFlags) {
+    this.reducerAddItemTypeFlags = flags;
+  }
+
+  reducerCheckAdminFlags: __CallReducerFlags = 'FullUpdate';
+  reducerCheckAdmin(flags: __CallReducerFlags) {
+    this.reducerCheckAdminFlags = flags;
+  }
+
   reducerGetCoinCommandFlags: __CallReducerFlags = 'FullUpdate';
   reducerGetCoinCommand(flags: __CallReducerFlags) {
     this.reducerGetCoinCommandFlags = flags;
@@ -311,9 +389,19 @@ export class SetReducerFlags {
 export class RemoteTables {
   constructor(private connection: __DbConnectionImpl) {}
 
+  get admin(): AdminTableHandle<'admin'> {
+    // clientCache is a private property
+    return new AdminTableHandle((this.connection as unknown as { clientCache: __ClientCache }).clientCache.getOrCreateTable<AdminRow>(REMOTE_MODULE.tables.admin));
+  }
+
   get item(): ItemTableHandle<'item'> {
     // clientCache is a private property
     return new ItemTableHandle((this.connection as unknown as { clientCache: __ClientCache }).clientCache.getOrCreateTable<ItemRow>(REMOTE_MODULE.tables.item));
+  }
+
+  get itemTypes(): ItemTypesTableHandle<'item_types'> {
+    // clientCache is a private property
+    return new ItemTypesTableHandle((this.connection as unknown as { clientCache: __ClientCache }).clientCache.getOrCreateTable<ItemType>(REMOTE_MODULE.tables.item_types));
   }
 
   get message(): MessageTableHandle<'message'> {

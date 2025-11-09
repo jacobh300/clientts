@@ -28,44 +28,40 @@ import {
   type TableHandle as __TableHandle,
 } from "spacetimedb";
 
-export type ItemRow = {
+export type ItemType = {
   id: number,
-  owner: __Identity,
-  itemTypeId: number,
-  quantity: number,
+  name: string,
 };
-let _cached_ItemRow_type_value: __AlgebraicTypeType | null = null;
+let _cached_ItemType_type_value: __AlgebraicTypeType | null = null;
 
 /**
  * An object for generated helper functions.
  */
-export const ItemRow = {
+export const ItemType = {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
   */
   getTypeScriptAlgebraicType(): __AlgebraicTypeType {
-    if (_cached_ItemRow_type_value) return _cached_ItemRow_type_value;
-    _cached_ItemRow_type_value = __AlgebraicTypeValue.Product({ elements: [] });
-    _cached_ItemRow_type_value.value.elements.push(
+    if (_cached_ItemType_type_value) return _cached_ItemType_type_value;
+    _cached_ItemType_type_value = __AlgebraicTypeValue.Product({ elements: [] });
+    _cached_ItemType_type_value.value.elements.push(
       { name: "id", algebraicType: __AlgebraicTypeValue.I32 },
-      { name: "owner", algebraicType: __AlgebraicTypeValue.createIdentityType() },
-      { name: "itemTypeId", algebraicType: __AlgebraicTypeValue.I32 },
-      { name: "quantity", algebraicType: __AlgebraicTypeValue.I32 },
+      { name: "name", algebraicType: __AlgebraicTypeValue.String },
     );
-    return _cached_ItemRow_type_value;
+    return _cached_ItemType_type_value;
   },
 
-  serialize(writer: __BinaryWriter, value: ItemRow): void {
-    __AlgebraicTypeValue.serializeValue(writer, ItemRow.getTypeScriptAlgebraicType(), value);
+  serialize(writer: __BinaryWriter, value: ItemType): void {
+    __AlgebraicTypeValue.serializeValue(writer, ItemType.getTypeScriptAlgebraicType(), value);
   },
 
-  deserialize(reader: __BinaryReader): ItemRow {
-    return __AlgebraicTypeValue.deserializeValue(reader, ItemRow.getTypeScriptAlgebraicType());
+  deserialize(reader: __BinaryReader): ItemType {
+    return __AlgebraicTypeValue.deserializeValue(reader, ItemType.getTypeScriptAlgebraicType());
   },
 
 }
 
-export default ItemRow;
+export default ItemType;
 
 

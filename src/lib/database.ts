@@ -82,7 +82,8 @@ export class Database
                 "SELECT * FROM message", 
                 "SELECT * FROM user", 
                 "SELECT * FROM response", 
-                "SELECT * FROM item"
+                "SELECT * FROM item",
+                "SELECT * FROM item_types",
             ]);
 
         if (this._resolveReady) {

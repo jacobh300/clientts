@@ -28,7 +28,7 @@ export function ItemViewerBar({ conn }: { conn: DbConnection })
         }
       }
     });
-    
+                console.log(conn.db.itemTypes.iter() );
     const ItemList = React.memo(({ myItems }: { myItems: Map<number, ItemRow> }) => (
     <>
       {Array.from(myItems.values()).map((itemRow) => (
@@ -36,7 +36,10 @@ export function ItemViewerBar({ conn }: { conn: DbConnection })
           key={itemRow.id}
           className="itemViewerBar_Item"
           size={80}
-          itemName={itemRow.name}
+          itemName =
+          { 
+            conn.db.itemTypes?.id.find(itemRow.itemTypeId)?.name || "Unknown Item" 
+          }
           itemAmount={itemRow.quantity.toString()}
           ownerName=
           {
@@ -55,20 +58,6 @@ export function ItemViewerBar({ conn }: { conn: DbConnection })
         </div>
     );
 }
-
-            //{
-            //    Array.from(myItems.values()).map((itemRow, index) => (
-            //        
-            //        <ItemDisplay
-            //            key={index}
-            //            className="itemViewerBar_Item"
-            //            size={80}
-            //            itemName={itemRow.name}
-            //            itemAmount={myItems.get(itemRow.id) ? myItems.get(itemRow.id)!.quantity.toString() : "0"}
-            //        />
-            //    ))
-            //}
-
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
   size?: number | string;           // e.g., 200 or "12rem"
